@@ -8,21 +8,19 @@ import jwt
 import datetime
 from dotenv import load_dotenv
 
-# Load environment variables
 load_dotenv()
 
 app = Flask(__name__, static_folder='static')
 CORS(app)
-app.secret_key = os.getenv('FLASK_SECRET_KEY', 'default_secret_key')  # Use an environment variable for the secret key
+app.secret_key = os.getenv('FLASK_SECRET_KEY', 'default_secret_key')
 
-# Database connection function
 def get_db_connection():
     conn = psycopg2.connect(
         host='localhost',
         port='5433', 
         database='MovieWeb',
         user='postgres',
-        password=os.getenv('DB_PASSWORD', 'default_password')  # Use an environment variable for the DB password
+        password=os.getenv('DB_PASSWORD', 'default_password') 
     )
     return conn
 
@@ -32,12 +30,10 @@ def check_session():
         return jsonify(logged_in=True, username=session['username'])
     return jsonify(logged_in=False)
 
-# Serve the landing page
 @app.route('/')
 def home():
     return render_template('index.html')
 
-# Sign-up route
 @app.route('/signup', methods=['POST'])
 def signup():
     data = request.get_json()
@@ -57,10 +53,9 @@ def signup():
                 conn.commit()
         return jsonify({"message": "User registered successfully!"}), 201
     except Exception as e:
-        print(f"Error: {e}")  # Log the error for debugging
+        print(f"Error: {e}") 
         return jsonify({"error": "An error occurred during signup."}), 400
 
-# Sign-in route
 @app.route('/signin', methods=['POST'])
 def signin():
     data = request.get_json()
@@ -83,7 +78,6 @@ def signin():
         print(f"Error: {e}")  # Log the error for debugging
         return jsonify({"error": "An error occurred during sign-in."}), 500
 
-# Password Reset Routes
 @app.route('/forgot-username', methods=['POST'])
 def forgot_username():
     data = request.get_json()
@@ -100,7 +94,7 @@ def forgot_username():
                 else:
                     return jsonify({"message": "Email not found"}), 404
     except Exception as e:
-        print(f"Error: {e}")  # Log the error for debugging
+        print(f"Error: {e}") 
         return jsonify({"error": "An error occurred."}), 500
 
 @app.route('/forgot-password', methods=['POST'])
@@ -119,7 +113,6 @@ def forgot_password():
                         'user_id': user['user_id'],
                         'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=15)
                     }, app.secret_key)
-                    # Save the token in Password_Reset table
                     cursor.execute("""INSERT INTO alpha.Password_Reset (user_id, reset_token, expires_at) 
                                       VALUES (%s, %s, %s)""",
                                    (user['user_id'], reset_token, datetime.datetime.utcnow() + datetime.timedelta(minutes=15)))
@@ -128,7 +121,7 @@ def forgot_password():
                 else:
                     return jsonify({"message": "Email not found"}), 404
     except Exception as e:
-        print(f"Error: {e}")  # Log the error for debugging
+        print(f"Error: {e}")  
         return jsonify({"error": "An error occurred."}), 500
 
 if __name__ == '__main__':
