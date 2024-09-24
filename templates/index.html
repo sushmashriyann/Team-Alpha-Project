@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Moviecom</title>
+</head>
+<body>
+    <header>
+        <div class="logo">Moviecom</div>
+        <nav>
+            <a href="#">Ask Kent</a>
+            <a href="#" id="signUpBtn">Sign Up</a>
+            <a href="#" id="signInBtn">Sign In</a>
+        </nav>
+    </header>
+
+    <!-- Sign-Up Modal -->
+    <div id="signUpModal" class="modal" role="dialog" aria-labelledby="signUpModalTitle" aria-modal="true">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="signUpModalTitle">Sign Up</h2>
+            <form id="signUpForm">
+                <input type="text" id="first_name" placeholder="First Name" required>
+                <input type="text" id="last_name" placeholder="Last Name" required>
+                <input type="text" id="username" placeholder="Username" required>
+                <input type="email" id="email" placeholder="Email" required>
+                <input type="password" id="password" placeholder="Password" required>
+                <button type="submit">Sign Up</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Sign-In Modal -->
+    <div id="signInModal" class="modal" role="dialog" aria-labelledby="signInModalTitle" aria-modal="true">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="signInModalTitle">Sign In</h2>
+            <form id="signInForm">
+                <input type="text" id="signin_username" placeholder="Username/Email" required>
+                <input type="password" id="signin_password" placeholder="Password" required>
+                <button type="submit">Sign In</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='scripts.js') }}"></script>
+</body>
+</html>
