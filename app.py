@@ -70,12 +70,12 @@ def signin():
                 user = cursor.fetchone()
 
                 if user and check_password_hash(user['password_hash'], password):
-                    session['username'] = user['username']  # Store username in session
+                    session['username'] = user['username'] 
                     return jsonify({"message": "Login successful!", "username": user['username']})
                 else:
                     return jsonify({"message": "Invalid credentials"}), 401
     except Exception as e:
-        print(f"Error: {e}")  # Log the error for debugging
+        print(f"Error: {e}") 
         return jsonify({"error": "An error occurred during sign-in."}), 500
 
 @app.route('/forgot-username', methods=['POST'])
