@@ -8,6 +8,8 @@ document.addEventListener("DOMContentLoaded", async function () {
     const searchBtn = document.getElementById('searchBtn');
     const genreButtons = document.querySelectorAll('.genre-btn');
     const searchBox = document.getElementById('searchBox');
+    const plotSearch = document.getElementById('plotSearch');
+    const plotSearchBtn = document.getElementById('plotSearchBtn');
     const TMDB_API_KEY = '242a2ba5f4ab590b9cc98651955f4509'; // Your API key
 
     // Hide modals on page load
@@ -35,6 +37,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         modal.style.display = 'none';
     }
 
+    // askBtn.onclick = () => showModal(askModal);
     // Show Sign-Up modal
     signUpBtn.onclick = () => showModal(signUpModal);
 
@@ -210,5 +213,40 @@ document.addEventListener("DOMContentLoaded", async function () {
         const response = await fetch(`https://api.themoviedb.org/3/discover/movie?api_key=${TMDB_API_KEY}&with_genres=${genreId}`);
         const data = await response.json();
         return data.results.slice(0, 5);  // Limit to top 5 trending movies
+    }
+
+    plotSearchBtn.addEventListener('click', async function () {
+        const userPlot = plotSearch.value.trim();
+
+        if (userPlot) {
+            try {
+                const response = await fetch('/ask_kent', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ text: userPlot }),
+                });
+
+                if (response.ok) {
+                    const recommendations = await response.json();
+                    displayRecommendations(recommendations);
+                } else {
+                    const errorData = await response.json();
+                    alert(errorData.error || 'An error occurred');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('There was a problem with the request.');
+            }
+        } else {
+            alert('Please enter a plot to search.');
+        }
+    });
+
+    function displayRecommendations(recommendations) {
+        // Clear previous recommendations if needed
+        // Append new recommendations to the DOM as required
+        console.log('Recommendations:', recommendations); // For debugging
     }
 });

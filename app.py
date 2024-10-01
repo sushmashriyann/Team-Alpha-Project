@@ -8,6 +8,12 @@ import jwt
 import datetime
 from dotenv import load_dotenv
 from flask_mail import Mail, Message
+from sbert import load_model,load_data,get_output_results,get_plot_embedding
+from sentence_transformers import SentenceTransformer, util
+import numpy as np
+import pandas as pd
+import csv
+import torch
 
 # Load environment variables
 load_dotenv()
@@ -35,6 +41,12 @@ def get_db_connection():
         password=os.getenv('DB_PASSWORD', 'default_password')  # Use an environment variable for the DB password
     )
     return conn
+
+#SBERT model
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+model = load_model()
+movies = load_data()
+plot_embeddings = get_plot_embedding(model, movies)
 
 # Route to display user session details
 @app.route('/user_session', methods=['GET'])
@@ -168,6 +180,22 @@ def forgot_password():
     except Exception as e:
         print(f"Error: {e}")
         return jsonify({"error": "An error occurred."}), 500
+
+@app.route('/ask_kent', methods = ['POST'])
+def ask_kent():
+    data = request.get_json()
+    user_plot = data.get('text')  # Get the input text from POST data
+    
+    if user_plot:
+        # Use the model to encode/process the input text
+        recommendations = get_output_results(model, movies, user_plot, plot_embeddings)
+
+        # Convert the embeddings to a list if you want to return them as JSON
+        # embeddings_list = top_results.tolist()
+
+        return jsonify(recommendations)
+    else:
+        return jsonify({"error": "No text provided"}), 400
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -35,7 +35,7 @@ def get_output_results(model, movies, user_plot, plot_embeddings):
     cosine_scores_np = cosine_scores.cpu().numpy()
     top_k = 10
     top_results = np.argsort(cosine_scores_np)[-top_k:][::-1]
-
+    recommendations = []
     # Display the top-k recommended movies
     print("\nTop movie recommendations based on the plot:")
     for idx in top_results:
@@ -43,8 +43,12 @@ def get_output_results(model, movies, user_plot, plot_embeddings):
         release_date = movies[idx].get('release_date')
         similarity_score = cosine_scores_np[idx]
         print(f"Title: {title}, Release Date: {release_date}, Similarity Score: {similarity_score:.4f}")
-
-    return top_results  # Return top results for potential further processing
+        recommendations.append({
+            "title": title,
+            "release_date": release_date,
+            "similarity_score": f"{similarity_score:.4f}"
+        })
+    return recommendations  # Return top results for potential further processing
 
 # Example usage:
 if __name__ == "__main__":
