@@ -13,8 +13,31 @@
             <a href="#">Ask Kent</a>
             <a href="#" id="signUpBtn">Sign Up</a>
             <a href="#" id="signInBtn">Sign In</a>
+            <div id="user-info"></div> <!-- User info section -->
         </nav>
     </header>
+
+    <!-- Main Content -->
+    <section id="search-and-genre-section">
+        <!-- Search Bar -->
+        <div id="search-container">
+            <input type="text" id="searchBox" placeholder="Search movies or series...">
+            <button id="searchBtn">Search</button>
+        </div>
+
+        <!-- Genre Selection -->
+        <h2>Find movies to watch? Click on your favorite Genre to find 5 best movies.</h2>
+        <h4>For more personalized recommendation, please sign up and let us know what you like!</h4>
+        <div id="genre-buttons">
+            <button class="genre-btn" data-genre="28">Action</button>
+            <button class="genre-btn" data-genre="35">Rom-Com</button>
+            <button class="genre-btn" data-genre="27">Horror</button>
+            <button class="genre-btn" data-genre="9648">Thriller/Mystery</button>
+            <button class="genre-btn" data-genre="10749">Romance</button>
+        </div>
+    </section>
+
+    <div id="results"></div> <!-- Results will be displayed here -->
 
     <!-- Sign-Up Modal -->
     <div id="signUpModal" class="modal" role="dialog" aria-labelledby="signUpModalTitle" aria-modal="true">
@@ -27,6 +50,8 @@
                 <input type="text" id="username" placeholder="Username" required>
                 <input type="email" id="email" placeholder="Email" required>
                 <input type="password" id="password" placeholder="Password" required>
+                <input type="password" id="confirm_password" placeholder="Confirm Password" required>
+                <div id="password-error" style="color:red; display:none;">Passwords do not match!</div>
                 <button type="submit">Sign Up</button>
             </form>
         </div>
