@@ -4,19 +4,19 @@ import os
 import psycopg2
 from psycopg2.extras import RealDictCursor
 from werkzeug.security import generate_password_hash, check_password_hash
+from apscheduler.schedulers.background import BackgroundScheduler
 import jwt
 import datetime
 from dotenv import load_dotenv
 from flask_mail import Mail, Message
-from sbert import load_model,load_data,get_output_results,get_plot_embedding
-from sentence_transformers import SentenceTransformer, util
-import numpy as np
-import pandas as pd
-import csv
-import torch
+import requests
+
 
 # Load environment variables
 load_dotenv()
+
+# TMDB API Key
+TMDB_API_KEY = '242a2ba5f4ab590b9cc98651955f4509'
 
 # Initialize Flask app
 app = Flask(__name__, static_folder='static')
@@ -41,12 +41,6 @@ def get_db_connection():
         password=os.getenv('DB_PASSWORD', 'default_password')  # Use an environment variable for the DB password
     )
     return conn
-
-#SBERT model
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-model = load_model()
-movies = load_data()
-plot_embeddings = get_plot_embedding(model, movies)
 
 # Route to display user session details
 @app.route('/user_session', methods=['GET'])
@@ -181,21 +175,27 @@ def forgot_password():
         print(f"Error: {e}")
         return jsonify({"error": "An error occurred."}), 500
 
-@app.route('/ask_kent', methods = ['POST'])
-def ask_kent():
-    data = request.get_json()
-    user_plot = data.get('text')  # Get the input text from POST data
-    
-    if user_plot:
-        # Use the model to encode/process the input text
-        recommendations = get_output_results(model, movies, user_plot, plot_embeddings)
+@app.route('/movie/<int:movie_id>')
+def movie_details(movie_id):
+    movie_details = get_movie_details_from_tmdb(movie_id)  # Function to fetch details
+    return render_template('movie_details.html', movie=movie_details)
 
-        # Convert the embeddings to a list if you want to return them as JSON
-        # embeddings_list = top_results.tolist()
-
-        return jsonify(recommendations)
+def get_movie_details_from_tmdb(movie_id):
+    url = f'https://api.themoviedb.org/3/movie/{movie_id}?api_key={TMDB_API_KEY}&append_to_response=videos'
+    response = requests.get(url)
+    if response.status_code == 200:
+        return response.json()
     else:
-        return jsonify({"error": "No text provided"}), 400
+        return {}
+
+def update_movie_list():
+    # Logic to fetch movies from Trakt and update your database or TMDb library.
+    pass
+
+# Initialize and start the scheduler
+scheduler = BackgroundScheduler()
+scheduler.add_job(func=update_movie_list, trigger="interval", hours=24)
+scheduler.start()
 
 if __name__ == '__main__':
     app.run(debug=True)
