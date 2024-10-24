@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>{{ movie.title }}</title>
+</head>
+<body>
+    <header>
+        <div class="logo">Moviecom</div>
+        <nav>
+            <a href="/">Home</a>
+        </nav>
+    </header>
+
+    <section id="movie-details">
+        <div class="movie-content">
+            <div class="movie-poster">
+                <img src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}" alt="{{ movie.title }}">
+            </div>
+            <div class="movie-info">
+                <h1>{{ movie.title }}</h1>
+                <p>Rating: {{ movie.vote_average }}/10</p>
+                <p>{{ movie.overview }}</p>
+            </div>
+        </div>
+        <div class="movie-trailer">
+            <h3>Trailer:</h3>
+            {% if movie.videos.results %}
+                {% for video in movie.videos.results %}
+                    {% if video.type == 'Trailer' %}
+                        <iframe width="560" height="315" src="https://www.youtube.com/embed/{{ video.key }}" frameborder="0" allowfullscreen></iframe>
+                    {% endif %}
+                {% endfor %}
+            {% else %}
+                <p>No trailer available.</p>
+            {% endif %}
+        </div>
+    </section>
+</body>
+</html>
