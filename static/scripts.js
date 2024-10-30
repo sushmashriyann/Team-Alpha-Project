@@ -4,10 +4,15 @@ document.addEventListener("DOMContentLoaded", async function () {
     const signInModal = document.getElementById('signInModal');
     const signUpBtn = document.getElementById('signUpBtn');
     const signInBtn = document.getElementById('signInBtn');
-    const existingAccount = document.getElementById('existingAccount');
     const closeButtons = document.querySelectorAll('.close');
     const userInfoDiv = document.getElementById('user-info');
     const updatePreferenceLink = document.getElementById('updatePreferenceLink');
+
+    const existingAccount = document.getElementById('existingAccount');
+    const forgotUsernameModal = document.getElementById('forgotUsernameModal');
+    const forgotPasswordModal = document.getElementById('forgotPasswordModal');
+    const forgotUsername = document.getElementById('forgotUsername');
+    const forgotPassword = document.getElementById('forgotPassword');
 
     // Search and Filter Elements
     const searchBtn = document.getElementById('searchBtn');
@@ -143,10 +148,6 @@ document.addEventListener("DOMContentLoaded", async function () {
     // Show modals when buttons are clicked
     signUpBtn.onclick = () => showModal(signUpModal);
     signInBtn.onclick = () => showModal(signInModal);
-    existingAccount.onclick = () => {
-        signUpModal.style.display = 'none';
-        showModal(signInModal);
-    };
 
     // Close modals on clicking the close button
     closeButtons.forEach(btn => {
@@ -541,4 +542,21 @@ async function showUpdatePreferenceForm() {
     // Load trending movies on page load
     const initialMovies = await fetchTrendingMovies();
     displayResults(initialMovies);
+
+    existingAccount.onclick = () => {
+        closeModal(signUpModal);
+        showModal(signInModal);
+    };
+    forgotUsername.onclick = function () {
+        closeModal(signInModal);  
+        showModal(forgotUsernameModal);
+    };
+
+    forgotPassword.onclick = () => {
+        closeModal(signInModal);  
+        showModal(forgotPasswordModal);
+    };
+
+    document.getElementById('closeForgotUsername').onclick = () => closeModal(forgotUsernameModal);
+    document.getElementById('closeForgotPassword').onclick = () => closeModal(forgotPasswordModal);
 });
