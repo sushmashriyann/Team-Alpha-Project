@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     const signInModal = document.getElementById('signInModal');
     const signUpBtn = document.getElementById('signUpBtn');
     const signInBtn = document.getElementById('signInBtn');
+    const existingAccount = document.getElementById('existingAccount');
     const closeButtons = document.querySelectorAll('.close');
     const userInfoDiv = document.getElementById('user-info');
     const updatePreferenceLink = document.getElementById('updatePreferenceLink');
@@ -142,6 +143,10 @@ document.addEventListener("DOMContentLoaded", async function () {
     // Show modals when buttons are clicked
     signUpBtn.onclick = () => showModal(signUpModal);
     signInBtn.onclick = () => showModal(signInModal);
+    existingAccount.onclick = () => {
+        signUpModal.style.display = 'none';
+        showModal(signInModal);
+    };
 
     // Close modals on clicking the close button
     closeButtons.forEach(btn => {
