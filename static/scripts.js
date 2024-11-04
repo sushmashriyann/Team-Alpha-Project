@@ -133,6 +133,27 @@ document.addEventListener("DOMContentLoaded", async function () {
         }
     };
 
+    // Handle Guest Login
+    document.getElementById('guestLoginButton').onclick = async function () {
+        try {
+            const response = await fetch('/guest', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            });
+            const result = await response.json();
+            if (response.ok) {
+                alert("Welcome, " + result.name + "!");
+                updateUserInfo(result.initials || "Guest");
+                closeModal(signInModal);
+                hideSignInUpButtons();
+            } else {
+                alert(result.error);
+            }
+        } catch (error) {
+            console.error('Guest Login error:', error);
+        }
+    };
+
     // Check session status on page load
     try {
         const response = await fetch('/check_session');

@@ -384,6 +384,21 @@ def get_recommendations():
 
     return jsonify(filtered_movies)
 
+@app.route('/guest', methods=['POST'])
+def guestLogin():
+    try:
+        guest_user_id = 0  
+        initials = "G"
+        name = "Guest"
+
+        session['user_id'] = guest_user_id 
+        session['initials'] = initials  
+        
+        return jsonify({"message": "Guest login successful!", "initials": initials, "name": name})
+
+    except Exception as e:
+        print(f"Error: {e}")
+        return jsonify({"error": "An error occurred during guest sign-in."}), 500
 
 # Initialize and start the scheduler
 scheduler = BackgroundScheduler()
