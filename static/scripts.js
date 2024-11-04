@@ -536,4 +536,5 @@ async function showUpdatePreferenceForm() {
     // Load trending movies on page load
     const initialMovies = await fetchTrendingMovies();
     displayResults(initialMovies);
+
 });

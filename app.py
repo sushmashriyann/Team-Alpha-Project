@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, session, jsonify
 from flask_cors import CORS
 import os
+from keys import openai_key
 import psycopg2
 from psycopg2.extras import RealDictCursor
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -10,6 +11,8 @@ import datetime
 from dotenv import load_dotenv
 from flask_mail import Mail, Message
 import requests
+#from plot_rec import MovieRecommender
+from csv_plot_rec import MovieRecommender
 
 
 # Load environment variables
@@ -357,7 +360,7 @@ def submit_preferences():
 @app.route('/get_recommendations', methods=['GET'])
 def get_recommendations():
     user_id = get_logged_in_user_id()  # Assuming you have a way to get the logged-in user's ID
-
+    conn = get_db_connection()
     # Fetch genres and sub-genres from the database for this user
     cur = conn.cursor()
     cur.execute("""
@@ -384,6 +387,31 @@ def get_recommendations():
 
     return jsonify(filtered_movies)
 
+@app.route('/plot.html')
+def plot_search():
+    return render_template('plot.html')
+
+@app.route('/plot_guess', methods=['POST'])
+def plot_guess():
+    data = request.get_json()
+    plot = data.get('plot')
+    if not plot:
+        return jsonify({"error": "Plot is required"}), 400
+    recommender = MovieRecommender(openai_key= openai_key)
+    guess = recommender.guess_movie(plot)
+    print(guess)
+    return jsonify({"guess": guess}), 200
+
+@app.route('/plot_recommend', methods=['POST'])
+def plot_recommend():
+    data = request.get_json()
+    plot = data.get('plot')
+    if not plot:
+        return jsonify({"error": "Plot is required"}), 400
+    recommender = MovieRecommender(openai_key= openai_key)
+    recommendations = recommender.rec_movie(plot)
+    print(recommendations)
+    return jsonify({"recommendations": recommendations}), 200
 
 # Initialize and start the scheduler
 scheduler = BackgroundScheduler()
