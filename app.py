@@ -23,12 +23,14 @@ app = Flask(__name__, static_folder='static')
 CORS(app)
 app.secret_key = os.getenv('FLASK_SECRET_KEY', 'default_secret_key')  # Use an environment variable for the secret key
 
-# Initialize Flask-Mail
-app.config['MAIL_SERVER'] = 'smtp.att.yahoo.com'
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
-app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
+app.config['MAIL_USERNAME'] = 'moviewebcom1@gmail.com'  # Replace with your Gmail address
+app.config['MAIL_PASSWORD'] = 'qvhj tvho ibnx kdmp'      # Replace with the Gmail app password
+app.config['MAIL_DEFAULT_SENDER'] = 'moviewebcom1@gmail.com'  # Replace with the same Gmail address
+
+
 mail = Mail(app)
 
 # Database connection function
@@ -149,65 +151,6 @@ def signin():
     except Exception as e:
         print(f"Error: {e}")  # Log the error for debugging
         return jsonify({"error": "An error occurred during sign-in."}), 500
-
-
-# Forgot username route
-@app.route('/forgot-username', methods=['POST'])
-def forgot_username():
-    data = request.get_json()
-    email = data['email']
-
-    try:
-        with get_db_connection() as conn:
-            with conn.cursor(cursor_factory=RealDictCursor) as cursor:
-                cursor.execute("SELECT username FROM alpha.User_Details WHERE email = %s", (email,))
-                user = cursor.fetchone()
-
-                if user:
-                    return jsonify({"username": user['username']}), 200
-                else:
-                    return jsonify({"message": "Email not found"}), 404
-    except Exception as e:
-        print(f"Error: {e}")  # Log the error for debugging
-        return jsonify({"error": "An error occurred."}), 500
-
-# Forgot password route
-@app.route('/forgot-password', methods=['POST'])
-def forgot_password():
-    data = request.get_json()
-    email = data['email']
-
-    try:
-        with get_db_connection() as conn:
-            with conn.cursor(cursor_factory=RealDictCursor) as cursor:
-                cursor.execute("SELECT user_id FROM alpha.User_Details WHERE email = %s", (email,))
-                user = cursor.fetchone()
-
-                if user:
-                    reset_token = jwt.encode({
-                        'user_id': user['user_id'],
-                        'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=15)
-                    }, app.secret_key)
-
-                    # Save the token in Password_Reset table (if required)
-                    cursor.execute("""INSERT INTO alpha.Password_Reset (user_id, reset_token, expires_at) 
-                                      VALUES (%s, %s, %s)""",
-                                   (user['user_id'], reset_token, datetime.datetime.utcnow() + datetime.timedelta(minutes=15)))
-                    conn.commit()
-
-                    # Send email with reset link
-                    msg = Message("Password Reset Request",
-                                  sender=os.getenv('MAIL_USERNAME'),  # Use environment variable for sender
-                                  recipients=[email])
-                    msg.body = f"Your password reset link: http://your-domain.com/reset-password?token={reset_token}"
-                    mail.send(msg)
-
-                    return jsonify({"message": "Password reset link has been sent!"}), 200
-                else:
-                    return jsonify({"message": "Email not found"}), 404
-    except Exception as e:
-        print(f"Error: {e}")
-        return jsonify({"error": "An error occurred."}), 500
 
 @app.route('/movie/<int:movie_id>')
 def movie_details(movie_id):
@@ -399,6 +342,171 @@ def guestLogin():
     except Exception as e:
         print(f"Error: {e}")
         return jsonify({"error": "An error occurred during guest sign-in."}), 500
+
+# Forgot username route
+@app.route('/forgot-username', methods=['POST'])
+def forgot_username():
+    data = request.get_json()
+    
+    if data is None or 'email' not in data:
+        return jsonify({"error": "Email is required"}), 400
+
+    email = data['email']
+    print(f"Received email: {email}")
+
+    try:
+        with get_db_connection() as conn:
+            with conn.cursor(cursor_factory=RealDictCursor) as cursor:
+                cursor.execute("SELECT username, first_name FROM alpha.User_Details WHERE email = %s", (email,))
+                user = cursor.fetchone()
+
+                if user:
+                    msg = Message(
+                        subject="Moviecom Username Recovery",
+                        sender=app.config['MAIL_DEFAULT_SENDER'],
+                        recipients=[email]
+                    )
+                    msg.body = (f"Hi {user['first_name']},\n\nYou've recently made a request to recover your username. "
+                                f"Here it is!\n\nUsername: {user['username']}\n\n"
+                                "If you did not ask to recover your username, please log in and reset your password "
+                                "immediately to avoid unauthorized activity on your account.\n\n"
+                                "Thank you,\nThe Moviecom Team")
+
+                    try:
+                        mail.send(msg)
+                        print("Email sent successfully")
+                        return jsonify({"message": "Email Sent!"}), 200
+                    except Exception as mail_error:
+                        print(f"Error sending email: {mail_error}")
+                        return jsonify({"error": "Failed to send email."}), 500
+
+                else:
+                    return jsonify({"message": "Email not found."}), 404
+    except Exception as e:
+        print(f"Error: {e}") 
+        return jsonify({"error": "An internal server error occurred."}), 500
+
+# Forgot password route
+@app.route('/forgot-password', methods=['POST'])
+def forgot_password():
+    data = request.get_json()
+
+    if data is None or 'email' not in data:
+        return jsonify({"error": "Email is required"}), 400
+
+    email = data['email']
+    print(f"Received email for password reset: {email}")
+
+    try:
+        with get_db_connection() as conn:
+            with conn.cursor(cursor_factory=RealDictCursor) as cursor:
+                cursor.execute("SELECT user_id, first_name FROM alpha.User_Details WHERE email = %s", (email,))
+                user = cursor.fetchone()
+
+                if user:
+                    reset_token = jwt.encode({
+                        'user_id': user['user_id'],
+                        'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=15)
+                    }, app.secret_key, algorithm="HS256")
+
+                    cursor.execute("""
+                        INSERT INTO alpha.Password_Reset (user_id, reset_token, expires_at)
+                        VALUES (%s, %s, %s)
+                    """, (user['user_id'], reset_token, datetime.datetime.utcnow() + datetime.timedelta(minutes=15)))
+                    conn.commit()
+
+                    reset_link = f"http://127.0.0.1:5000/reset-password?token={reset_token}"
+                    msg = Message("Moviecom Password Recovery",
+                                  sender=app.config['MAIL_DEFAULT_SENDER'],
+                                  recipients=[email])
+
+                    msg.html = f"""
+                    <p>Hi {user['first_name']},</p>
+                    <p>You've recently made a request to reset your password. This link will expire in 15 minutes. Let's reset it now!</p>
+                    <a href="{reset_link}" style="display: inline-block; padding: 10px 20px; color: black; background-color: #ff6f61; text-decoration: none; border-radius: 5px;">Reset Password</a>
+                    <p>If you did not ask to reset your password, please log in and reset your password immediately to avoid unauthorized activity on your account.</p>
+                    <p>Thank you,<br>The Moviecom Team</p>
+                    """
+
+                    try:
+                        mail.send(msg)
+                        print("Password reset email sent successfully")
+                        return jsonify({"message": "Email sent."}), 200
+                    except Exception as mail_error:
+                        print(f"Error sending email: {mail_error}")
+                        return jsonify({"error": "Failed to send email."}), 500
+                else:
+                    return jsonify({"message": "Email not found."}), 404
+    except Exception as e:
+        print(f"Error: {e}")
+        return jsonify({"error": "An internal server error occurred."}), 500
+
+# Reset password route
+@app.route('/reset-password', methods=['GET', 'POST'])
+def reset_password():
+    if request.method == 'GET':
+        return '''
+        <!doctype html>
+        <html lang="en">
+          <head>
+            <meta charset="utf-8">
+            <title>Reset Password</title>
+          </head>
+          <body>
+            <h2>Reset Password</h2>
+            <form action="/reset-password" method="POST">
+              <input type="hidden" name="token" value="{token}">
+              <label for="new_password">New Password:</label><br>
+              <input type="password" id="new_password" name="new_password" required><br><br>
+              <button type="submit">Reset Password</button>
+            </form>
+          </body>
+        </html>
+        '''.format(token=request.args.get('token'))
+    elif request.method == 'POST':
+        data = request.form
+        token = data.get('token')
+        new_password = data.get('new_password')
+
+        if not token or not new_password:
+            return jsonify({"error": "Token and new password are required"}), 400
+
+        try:
+            decoded_token = jwt.decode(token, app.secret_key, algorithms=["HS256"])
+            user_id = decoded_token.get('user_id')
+
+            with get_db_connection() as conn:
+                with conn.cursor(cursor_factory=RealDictCursor) as cursor:
+                    cursor.execute("""
+                        SELECT * FROM alpha.Password_Reset 
+                        WHERE user_id = %s AND reset_token = %s AND expires_at > %s
+                    """, (user_id, token, datetime.datetime.utcnow()))
+                    
+                    token_data = cursor.fetchone()
+                    
+                    if not token_data:
+                        return jsonify({"error": "Invalid or expired token"}), 400
+
+                    hashed_password = generate_password_hash(new_password)
+
+                    cursor.execute("""
+                        UPDATE alpha.User_Details 
+                        SET password_hash = %s  
+                        WHERE user_id = %s
+                    """, (hashed_password, user_id))
+
+                    cursor.execute("DELETE FROM alpha.Password_Reset WHERE user_id = %s", (user_id,))
+                    conn.commit()
+
+                    return jsonify({"message": "Password has been reset successfully!"}), 200
+
+        except jwt.ExpiredSignatureError:
+            return jsonify({"error": "The token has expired"}), 400
+        except jwt.InvalidTokenError:
+            return jsonify({"error": "Invalid token"}), 400
+        except Exception as e:
+            print(f"Error: {e}")
+            return jsonify({"error": "An error occurred while resetting the password"}), 500
 
 # Initialize and start the scheduler
 scheduler = BackgroundScheduler()

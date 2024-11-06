@@ -96,8 +96,6 @@ document.getElementById('getRecommendationsBtn').onclick = async function () {
 };
 </script>
 
-
-
  <!-- Sign-Up Modal -->
 <div id="signUpModal" class="modal" role="dialog" aria-labelledby="signUpModalTitle" aria-modal="true">
     <div class="modal-content">
@@ -142,26 +140,155 @@ document.getElementById('getRecommendationsBtn').onclick = async function () {
     <div class="modal-content">
         <span class="close">&times;</span>
         <h2 id="forgotUsernameModalTitle">Recover Username</h2>
-        <form id="forgotUsernameForm">
-            <input type="email" id="recover_username_email" placeholder="Enter your email" required>
+        <form id="forgotUsernameForm" onsubmit="submitForgotUsername(); return false;">
+            <input type="email" id="recover_username_email" name="recover_username_email" placeholder="Enter your email" required>
             <button type="submit">Submit</button>
             <button type="button" class="close-modal-btn" id="closeForgotUsername">Close</button>
         </form>
     </div>
 </div>
 
+<!-- Username Recovery Sent Confirmation Modal -->
+<div id="usernameRecoverSentModal" class="modal" role="dialog" aria-labelledby="usernameRecoverSentModalTitle" aria-modal="true" style="display: none;">
+    <div class="modal-content">
+        <span class="close" onclick="closeUsernameRecoverSentModal()">&times;</span>
+        <h2 id="usernameRecoverSentModalTitle">Email Sent</h2>
+        <p>An email with your username has been sent to <span id="sentEmailAddress"></span>. Check your spam or junk folder if you don’t see the email in your inbox. If you no longer have access to this email account, please contact us.</p>
+        <button type="button" onclick="closeUsernameRecoverSentModal()">Close</button>
+    </div>
+</div>
+
 <!-- Forgot Password Modal -->
 <div id="forgotPasswordModal" class="modal" role="dialog" aria-labelledby="forgotPasswordModalTitle" aria-modal="true">
     <div class="modal-content">
-        <span class="close">&times;</span>
+        <span class="close" onclick="document.getElementById('forgotPasswordModal').style.display='none'">&times;</span>
         <h2 id="forgotPasswordModalTitle">Recover Password</h2>
-        <form id="forgotPasswordForm">
+        <form id="forgotPasswordForm" onsubmit="submitForgotPassword(); return false;">
             <input type="email" id="recover_password_email" placeholder="Enter your email" required>
             <button type="submit">Submit</button>
-            <button type="button" class="close-modal-btn" id="closeForgotPassword">Close</button>
+            <button type="button" class="close-modal-btn" onclick="document.getElementById('forgotPasswordModal').style.display='none'">Close</button>
         </form>
     </div>
 </div>
+
+<!-- Password Reset Sent Confirmation Modal -->
+<div id="passwordResetSentModal" class="modal" role="dialog" aria-labelledby="passwordResetSentModalTitle" aria-modal="true" style="display: none;">
+    <div class="modal-content">
+        <span class="close" onclick="closePasswordResetSentModal()">&times;</span>
+        <h2 id="passwordResetSentModalTitle">Email Sent</h2>
+        <p>An email with instructions on how to reset your password has been sent to <span id="resetEmailAddress"></span>. Check your spam or junk folder if you don’t see the email in your inbox. If you no longer have access to this email account, please contact us.</p>
+        <button type="button" onclick="closePasswordResetSentModal()">Close</button>
+    </div>
+</div>
+
+<!-- Password Reset Form -->
+<div id="resetPasswordFormContainer">
+    <h2>Reset Your Password</h2>
+    <form id="resetPasswordForm" onsubmit="submitNewPassword(); return false;">
+        <input type="hidden" id="reset_token" value="">
+        <input type="password" id="new_password" placeholder="Enter new password" required>
+        <button type="submit">Reset Password</button>
+        <p id="resetPasswordMessage"></p>
+    </form>
+</div>
+
+<script>
+    async function submitForgotUsername() {
+        const email = document.getElementById("recover_username_email").value;
+
+        try {
+            const response = await fetch("/forgot-username", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ email: email })
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+
+                document.getElementById("forgotUsernameModal").style.display = "none";
+                document.getElementById("recover_username_email").value = "";
+                
+                document.getElementById("sentEmailAddress").textContent = email;
+                document.getElementById("usernameRecoverSentModal").style.display = "block";
+            } else {
+                const errorData = await response.json();
+                alert(`Error: ${errorData.message || 'An error occurred'}`);
+            }
+        } catch (error) {
+            console.error("Error:", error);
+            alert("An error occurred. Please try again.");
+        }
+    }
+
+    function closeUsernameRecoverSentModal() {
+        document.getElementById("usernameRecoverSentModal").style.display = "none";
+    }
+
+    async function submitForgotPassword() {
+        const email = document.getElementById("recover_password_email").value;
+
+        try {
+            const response = await fetch("/forgot-password", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ email: email })
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+
+                document.getElementById("forgotPasswordModal").style.display = "none";
+                document.getElementById("recover_password_email").value = "";
+
+                document.getElementById("resetEmailAddress").textContent = email;
+                document.getElementById("passwordResetSentModal").style.display = "block";
+            } else {
+                const errorData = await response.json();
+                alert(errorData.message || 'An error occurred');
+            }
+        } catch (error) {
+            console.error("Error:", error);
+            alert("An error occurred. Please try again.");
+        }
+    }
+
+    document.getElementById("reset_token").value = new URLSearchParams(window.location.search).get('token');
+
+    function closePasswordResetSentModal() {
+        document.getElementById("passwordResetSentModal").style.display = "none";
+    }  
+
+    async function submitNewPassword() {
+        const token = document.getElementById("reset_token").value;
+        const newPassword = document.getElementById("new_password").value;
+        const messageDisplay = document.getElementById("resetPasswordMessage");
+
+        try {
+            const response = await fetch("/reset-password", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ token: token, new_password: newPassword })
+            });
+
+            const data = await response.json();
+            if (response.ok) {
+                messageDisplay.textContent = data.message;
+            } else {
+                messageDisplay.textContent = data.error || "An error occurred";
+            }
+        } catch (error) {
+            console.error("Error:", error);
+            messageDisplay.textContent = "An error occurred. Please try again.";
+        }
+    }
+</script>
 
     <script src="{{ url_for('static', filename='scripts.js') }}"></script>
 </body>
