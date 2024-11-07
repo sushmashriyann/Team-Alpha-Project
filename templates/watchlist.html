@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Watchlist</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='watchlist.css') }}"> 
+</head>
+<body>
+    <header>
+        <div class="logo">Moviecom</div>
+        <nav>
+	    <a href="{{ url_for('recommended') }}">Recommended For You</a>
+            <a href="{{ url_for('home') }}">Home</a>
+        </nav>
+    </header>
+    <main>
+        <h1>Your Watchlist</h1>
+        <div id="watchlist" class="watchlist-container"></div>
+    </main>
+    <script src="{{ url_for('static', filename='watchlist-scripts.js') }}"></script>
+</body>
+</html>
