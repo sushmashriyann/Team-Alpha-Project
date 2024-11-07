@@ -402,3 +402,73 @@ button:hover {
 #user-info span {
     margin-left: 10px; 
 }
+
+/* Watchlist Container Styling */
+.watchlist-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    margin: 20px;
+}
+
+/* Watchlist Item Styling */
+.watchlist-item {
+    background-color: #fff2f2; /* Light peachy pink background */
+    border: 1px solid #ffcccc; /* Peachy border */
+    border-radius: 8px;
+    padding: 10px;
+    width: 200px;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+}
+
+.watchlist-item:hover {
+    transform: scale(1.05);
+}
+
+.watchlist-item img {
+    width: 100%;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.watchlist-item h3 {
+    font-size: 18px;
+    margin: 10px 0;
+    color: #e69999; /* Peachy pink color for text */
+}
+
+.watchlist-item p {
+    font-size: 0.9em;
+    margin: 5px 0;
+}
+
+/* Highly specific Add to Watchlist button style */
+#add-watchlist-button.button-watchlist-add {
+    background-color: #ff6f61 !important; /* Force trending section color */
+    color: white !important;
+    border: none !important;
+    padding: 10px 20px !important;
+    border-radius: 5px !important;
+    cursor: pointer !important;
+    transition: background-color 0.3s ease !important;
+}
+#add-watchlist-button.button-watchlist-add:hover {
+    background-color: #ff4a3c !important; /* Darker hover color */
+}
+
+/* Highly specific Remove from Watchlist button style */
+#remove-watchlist-button.button-watchlist-remove {
+    background-color: #d9534f !important; /* Force red shade */
+    color: white !important;
+    border: none !important;
+    padding: 10px 20px !important;
+    border-radius: 5px !important;
+    cursor: pointer !important;
+    transition: background-color 0.3s ease !important;
+}
+#remove-watchlist-button.button-watchlist-remove:hover {
+    background-color: #c9302c !important; /* Darker red hover color */
+}

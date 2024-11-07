@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+        <title>Plot Search - Moviecom</title>
+    </head>
+    <body>
+        <header>
+            <div class="logo">Moviecom</div>
+            <nav>
+                <a href="/">Home</a>
+            </nav>
+        </header>
+
+        <div id="search-container">
+            <input type="text" id="plotSearchBox" placeholder="Enter the plot to find the movie">
+            <button id="plotSearchBtn">Search</button>
+        </div>
+
+        <div id="results-container"></div>
+        <script src="{{ url_for('static', filename='plot.js') }}"></script>
+    </body>
+</html>

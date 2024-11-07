@@ -1,0 +1,96 @@
+/* General body styling */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #ffe6e6; /* Light peach background */
+}
+
+/* Header styling */
+header {
+    display: flex;
+    justify-content: space-between;
+    padding: 1em;
+    background-color: #ff6f61; /* Peach color for header */
+    color: white;
+    align-items: center; /* Align items vertically */
+}
+
+/* Navigation styling */
+nav {
+    display: flex;
+    align-items: center; /* Center items in nav */
+}
+
+nav a {
+    color: white;
+    margin-left: 1em;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+nav a:hover {
+    color: #ffcc00; /* Change color on hover for better visibility */
+}
+
+/* Main content styling */
+main {
+    padding: 20px;
+}
+
+/* Heading styling */
+h1 {
+    color: #ff6f61; /* Peachy pink color for heading */
+    text-align: center;
+}
+
+/* Watchlist container styling */
+.watchlist-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+/* Watchlist item styling */
+.watchlist-item {
+    background-color: #fff2f2; /* Light peachy pink background */
+    border: 1px solid #ffcccc; /* Peachy border */
+    border-radius: 8px;
+    padding: 10px;
+    width: 200px;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+}
+
+.watchlist-item:hover {
+    transform: scale(1.05); /* Slight scale-up on hover */
+}
+
+.watchlist-item img {
+    width: 100%;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.watchlist-item h3 {
+    font-size: 18px;
+    margin: 10px 0;
+    color: #e69999; /* Peachy pink color for text */
+}
+
+/* Recommended movies alignment styling */
+#recommended {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+
+#recommended .movie-item {
+    flex: 1 1 calc(20% - 20px); /* Ensures 5 movies per row, with a 20px gap */
+    max-width: calc(20% - 20px);
+    box-sizing: border-box;
+}
