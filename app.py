@@ -210,6 +210,7 @@ def forgot_password():
         print(f"Error: {e}")
         return jsonify({"error": "An error occurred."}), 500
 
+<<<<<<< Updated upstream
 @app.route('/movie/<int:movie_id>')
 def movie_details(movie_id):
     movie_details = get_movie_details_from_tmdb(movie_id)  # Function to fetch details
@@ -220,6 +221,27 @@ def get_movie_details_from_tmdb(movie_id):
     response = requests.get(url)
     if response.status_code == 200:
         return response.json()
+=======
+@app.route('/ask_kent', methods = ['POST'])
+def ask_kent():
+    data = request.get_json()
+    user_plot = data.get('text')  # Get the input text from POST data
+    
+    if user_plot:
+        # Use the model to encode/process the input text
+        recommendations_idx = get_output_results(model, movies, user_plot, plot_embeddings)
+        #recommendations_idx = list(recommendations_idx)
+        #recommendations = []
+        #for idx in recommendations_idx:
+        #    print(f"Title: {idx.title}, Release Date: {idx.release_date}")
+        #    recommendations.append({
+        #    "title": idx["title"],
+        #    "release_date": idx.get("release_date", "N/A")
+        #    })
+        # Convert the embeddings to a list if you want to return them as JSON
+        # embeddings_list = top_results.tolist()
+        return jsonify(recommendations_idx)
+>>>>>>> Stashed changes
     else:
         return {}
 

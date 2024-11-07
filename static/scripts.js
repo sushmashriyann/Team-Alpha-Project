@@ -381,7 +381,19 @@ async function showUpdatePreferenceForm() {
         });
     }
 
+<<<<<<< Updated upstream
 */
+=======
+    // Genre Button Functionality
+    genreButtons.forEach(button => {
+        button.onclick = async function () {
+            const genreId = button.getAttribute('data-genre');
+            const results = await fetchTrendingByGenre(genreId);
+            console.log(results)
+            displayResults(results);
+        };
+    });
+>>>>>>> Stashed changes
 
 function displayResults(results) {
     resultsDiv.innerHTML = ''; // Clear previous results
@@ -389,17 +401,57 @@ function displayResults(results) {
         resultsDiv.innerHTML = '<p>No results found.</p>'; // No results message
         return;
     }
+/*
+    // Fetch movies by title and release_date
+    async function fetchMoviesbyReleasedate(query,releaseDate) {
+        const response = await fetch(`https://api.themoviedb.org/3/search/multi?api_key=${TMDB_API_KEY}&query=${query}`);
+        const data = await response.json();
+        const filteredMovies = data.results.filter(movie => movie.release_date === releaseDate);
 
+<<<<<<< Updated upstream
     results.forEach(item => {
         const resultItem = document.createElement('div');
         resultItem.classList.add('result-item');
         resultItem.setAttribute('data-id', item.id);
+=======
+            if (filteredMovies.length > 0) {
+                // Return the movie that matches both title and release date
+                return filteredMovies[0];  // Return the first matching movie
+            }  
+    }
+*/
+    async function fetchMovieData(recommendations) {
+            let moviesData = []
+            const moviePromises = recommendations.map(async (rec) => {
+                const query = encodeURIComponent(rec.title);
+                const response = await fetch(`https://api.themoviedb.org/3/search/multi?api_key=${TMDB_API_KEY}&query=${query}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.results && data.results.length > 0) {
+                        moviesData.push(data.results[0]); // Push the first result into moviesData
+                    }
+                    return data.results[0]; 
+                }
+                console.error('Error fetching from TMDB:', response.statusText);
+                return null; 
+            });
+        
+        const movieResults = await Promise.allSettled(moviePromises); 
+        const filteredResults = movieResults.filter(movie => movie);       
+        displayResults(moviesData); 
+    }
+
+    // Plot Search button functionality
+    plotSearchBtn.addEventListener('click', async function () {
+        const userPlot = plotSearch.value.trim();
+>>>>>>> Stashed changes
 
         const poster = document.createElement('img');
         poster.src = item.poster_path ? `https://image.tmdb.org/t/p/w200${item.poster_path}` : 'path/to/default/image.jpg';
         poster.alt = item.title || item.name;
         resultItem.appendChild(poster);
 
+<<<<<<< Updated upstream
         const title = document.createElement('h3');
         title.textContent = item.title || item.name || item.original_title;
         resultItem.appendChild(title);
@@ -461,6 +513,20 @@ async function addToWatchlist(movie) {
         const result = await response.json();
         if (response.ok) {
             alert(result.message);
+=======
+                if (response.ok) {
+                    const recommendations = await response.json();
+                    await fetchMovieData(recommendations);
+                } 
+                else {
+                    const errorData = await response.json();
+                    alert(errorData.error || 'An error occurred');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('There was a problem with the request.');
+            }
+>>>>>>> Stashed changes
         } else {
             alert(result.error || result.message);
         }
@@ -516,6 +582,7 @@ async function addToWatchlist(movie) {
             console.error("Error fetching data:", error);
         }
     });
+<<<<<<< Updated upstream
 
     // TMDB API genre population (already exists)
     async function populateGenres() {
@@ -625,4 +692,6 @@ async function addToWatchlist(movie) {
     // Load trending movies on page load
     const initialMovies = await fetchTrendingMovies();
     displayResults(initialMovies);
+=======
+>>>>>>> Stashed changes
 });
