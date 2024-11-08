@@ -427,7 +427,9 @@ async function addToWatchlist(movie) {
         });
 
         const result = await response.json();
+        
         if (response.ok) {
+            try {
             alert(result.message);
                 if (response.ok) {
                     const recommendations = await response.json();
@@ -437,16 +439,21 @@ async function addToWatchlist(movie) {
                     const errorData = await response.json();
                     alert(errorData.error || 'An error occurred');
                 }
-            } catch (error) {
+            }
+            catch (error) {
                 console.error('Error:', error);
                 alert('There was a problem with the request.');
             }
-        } else {
+        }
+        else {
             alert(result.error || result.message);
         }
-    } catch (error) {
+    }
+    catch (error) {
         console.error('Error adding to watchlist:', error);
     }
+}
+
 
 
     // Populate filters (genres, years, countries, languages) from TMDB
@@ -604,6 +611,5 @@ async function addToWatchlist(movie) {
     // Load trending movies on page load
     const initialMovies = await fetchTrendingMovies();
     displayResults(initialMovies);
-=======
->>>>>>> Stashed changes
+
 });

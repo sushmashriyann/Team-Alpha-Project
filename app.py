@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, session, jsonify
 from flask_cors import CORS
 import os
 from keys import openai_key
+from keys import openai_key
 import psycopg2
 from psycopg2.extras import RealDictCursor
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -11,6 +12,8 @@ import datetime
 from dotenv import load_dotenv
 from flask_mail import Mail, Message
 import requests
+#from plot_rec import MovieRecommender
+from csv_plot_rec import MovieRecommender
 #from plot_rec import MovieRecommender
 from csv_plot_rec import MovieRecommender
 
@@ -360,6 +363,7 @@ def submit_preferences():
 @app.route('/get_recommendations', methods=['GET'])
 def get_recommendations():
     user_id = get_logged_in_user_id()  # Assuming you have a way to get the logged-in user's ID
+    conn = get_db_connection()
     conn = get_db_connection()
     # Fetch genres and sub-genres from the database for this user
     cur = conn.cursor()
