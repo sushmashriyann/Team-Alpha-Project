@@ -161,6 +161,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             showUpdatePreferenceForm(); // Otherwise show preference form
         }
     });
+    
 async function showUpdatePreferenceForm() {
     try {
         // Fetch the preference form HTML from the backend
@@ -253,7 +254,6 @@ async function showUpdatePreferenceForm() {
     }
 };
 
-
     // Fetch trending movies
     trendingLink.onclick = async function (e) {
         e.preventDefault();
@@ -282,7 +282,7 @@ async function showUpdatePreferenceForm() {
         return data.results.slice(0, 20); // Limit to top 20 results
     }
 
-/*    function displayResults(results) {
+    function displayResults(results) {
         resultsDiv.innerHTML = ''; // Clear previous results
         if (results.length === 0) {
             resultsDiv.innerHTML = '<p>No results found.</p>'; // No results message
@@ -319,18 +319,8 @@ async function showUpdatePreferenceForm() {
         });
     }
 
-<<<<<<< Updated upstream
-*/
-    // Genre Button Functionality
-    genreButtons.forEach(button => {
-        button.onclick = async function () {
-            const genreId = button.getAttribute('data-genre');
-            const results = await fetchTrendingByGenre(genreId);
-            console.log(results)
-            displayResults(results);
-        };
-    });
 
+/*
 function displayResults(results) {
     resultsDiv.innerHTML = ''; // Clear previous results
     if (results.length === 0) {
@@ -359,47 +349,8 @@ function displayResults(results) {
         displayResults(moviesData); 
     }
 
-    // Plot Search button functionality
-    plotSearchBtn.addEventListener('click', async function () {
-        const userPlot = plotSearch.value.trim();
-
-        const poster = document.createElement('img');
-        poster.src = item.poster_path ? `https://image.tmdb.org/t/p/w200${item.poster_path}` : 'path/to/default/image.jpg';
-        poster.alt = item.title || item.name;
-        resultItem.appendChild(poster);
-
-        const title = document.createElement('h3');
-        title.textContent = item.title || item.name || item.original_title;
-        resultItem.appendChild(title);
-
-        const rating = document.createElement('p');
-        rating.textContent = `Rating: ${item.vote_average || 'N/A'}/10`;
-        resultItem.appendChild(rating);
-
-        const overview = document.createElement('p');
-        overview.textContent = item.overview || 'No overview available.';
-        resultItem.appendChild(overview);
-
-        // Add button to add to watchlist
-        const addButton = document.createElement('button');
-        addButton.textContent = 'Add to Watchlist';
-    //    addButton.onclick = () => addToWatchlist(item);
- resultItem.appendChild(addButton);
-addButton.onclick = (e) => {
-addToWatchlist(item); // Call the function to add to watchlist
-    e.stopPropagation(); // Prevent the event from bubbling up
-    
-};
-       
-
-        resultItem.onclick = () => {
-            window.location.href = `/movie/${item.id}`; // Redirect to movie details page
-        };
-
-        resultsDiv.appendChild(resultItem);
-    });
 }
-
+*/
    const watchlistDiv = document.getElementById('watchlist');
     if (watchlistDiv) {
         get_watchlist(); // Call this only if `#watchlist` exists

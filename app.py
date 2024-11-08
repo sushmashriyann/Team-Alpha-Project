@@ -2,7 +2,6 @@ from flask import Flask, render_template, request, session, jsonify
 from flask_cors import CORS
 import os
 from keys import openai_key
-from keys import openai_key
 import psycopg2
 from psycopg2.extras import RealDictCursor
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -14,10 +13,7 @@ from flask_mail import Mail, Message
 import requests
 #from plot_rec import MovieRecommender
 from csv_plot_rec import MovieRecommender
-#from plot_rec import MovieRecommender
-from csv_plot_rec import MovieRecommender
 
-from plot_rec import MovieRecommender
 
 # Load environment variables
 load_dotenv()
@@ -226,7 +222,8 @@ def get_movie_details_from_tmdb(movie_id):
     response = requests.get(url)
     if response.status_code == 200:
         return response.json()
-    
+    else:
+        return {}
 
 def update_movie_list():
     # Logic to fetch movies from Trakt and update your database or TMDb library.
@@ -363,7 +360,7 @@ def submit_preferences():
 @app.route('/get_recommendations', methods=['GET'])
 def get_recommendations():
     user_id = get_logged_in_user_id()  # Assuming you have a way to get the logged-in user's ID
-    conn = get_db_connection()
+
     conn = get_db_connection()
     # Fetch genres and sub-genres from the database for this user
     cur = conn.cursor()
@@ -390,32 +387,6 @@ def get_recommendations():
     filtered_movies = [movie for movie in movies if any(keyword in movie['overview'] for keyword in subgenre_keywords)]
 
     return jsonify(filtered_movies)
-
-@app.route('/plot.html')
-def plot_search():
-    return render_template('plot.html')
-
-@app.route('/plot_guess', methods=['POST'])
-def plot_guess():
-    data = request.get_json()
-    plot = data.get('plot')
-    if not plot:
-        return jsonify({"error": "Plot is required"}), 400
-    recommender = MovieRecommender(openai_key= openai_key)
-    guess = recommender.guess_movie(plot)
-    print(guess)
-    return jsonify({"guess": guess}), 200
-
-@app.route('/plot_recommend', methods=['POST'])
-def plot_recommend():
-    data = request.get_json()
-    plot = data.get('plot')
-    if not plot:
-        return jsonify({"error": "Plot is required"}), 400
-    recommender = MovieRecommender(openai_key= openai_key)
-    recommendations = recommender.rec_movie(plot)
-    print(recommendations)
-    return jsonify({"recommendations": recommendations}), 200
 
 @app.route('/get_user_preferences', methods=['GET'])
 def get_user_preferences():
@@ -549,14 +520,20 @@ def remove_from_watchlist():
         return jsonify({'error': 'Failed to remove movie'}), 500
 
 
-# Initialize and start the scheduler
-scheduler = BackgroundScheduler()
-scheduler.add_job(func=update_movie_list, trigger="interval", hours=24)
-scheduler.start()
-
 @app.route('/plot.html')
 def plot_search():
     return render_template('plot.html')
+
+@app.route('/plot_guess', methods=['POST'])
+def plot_guess():
+    data = request.get_json()
+    plot = data.get('plot')
+    if not plot:
+        return jsonify({"error": "Plot is required"}), 400
+    recommender = MovieRecommender(openai_key= openai_key)
+    guess = recommender.guess_movie(plot)
+    print(guess)
+    return jsonify({"guess": guess}), 200
 
 @app.route('/plot_recommend', methods=['POST'])
 def plot_recommend():
@@ -565,12 +542,9 @@ def plot_recommend():
     if not plot:
         return jsonify({"error": "Plot is required"}), 400
     recommender = MovieRecommender(openai_key= openai_key)
-    recommendations = recommender.recommend_movies(plot)
-    type(recommendations)
-    if isinstance(recommendations, str):
-        recommendations = recommendations.split(";")
+    recommendations = recommender.rec_movie(plot)
+    print(recommendations)
     return jsonify({"recommendations": recommendations}), 200
-
 
 # Initialize and start the scheduler
 scheduler = BackgroundScheduler()
