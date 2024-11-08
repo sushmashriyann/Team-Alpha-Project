@@ -11,6 +11,9 @@ import datetime
 from dotenv import load_dotenv
 from flask_mail import Mail, Message
 import requests
+#from plot_rec import MovieRecommender
+from csv_plot_rec import MovieRecommender
+
 from plot_rec import MovieRecommender
 
 # Load environment variables
@@ -210,7 +213,6 @@ def forgot_password():
         print(f"Error: {e}")
         return jsonify({"error": "An error occurred."}), 500
 
-<<<<<<< Updated upstream
 @app.route('/movie/<int:movie_id>')
 def movie_details(movie_id):
     movie_details = get_movie_details_from_tmdb(movie_id)  # Function to fetch details
@@ -221,29 +223,7 @@ def get_movie_details_from_tmdb(movie_id):
     response = requests.get(url)
     if response.status_code == 200:
         return response.json()
-=======
-@app.route('/ask_kent', methods = ['POST'])
-def ask_kent():
-    data = request.get_json()
-    user_plot = data.get('text')  # Get the input text from POST data
     
-    if user_plot:
-        # Use the model to encode/process the input text
-        recommendations_idx = get_output_results(model, movies, user_plot, plot_embeddings)
-        #recommendations_idx = list(recommendations_idx)
-        #recommendations = []
-        #for idx in recommendations_idx:
-        #    print(f"Title: {idx.title}, Release Date: {idx.release_date}")
-        #    recommendations.append({
-        #    "title": idx["title"],
-        #    "release_date": idx.get("release_date", "N/A")
-        #    })
-        # Convert the embeddings to a list if you want to return them as JSON
-        # embeddings_list = top_results.tolist()
-        return jsonify(recommendations_idx)
->>>>>>> Stashed changes
-    else:
-        return {}
 
 def update_movie_list():
     # Logic to fetch movies from Trakt and update your database or TMDb library.
@@ -380,7 +360,7 @@ def submit_preferences():
 @app.route('/get_recommendations', methods=['GET'])
 def get_recommendations():
     user_id = get_logged_in_user_id()  # Assuming you have a way to get the logged-in user's ID
-
+    conn = get_db_connection()
     # Fetch genres and sub-genres from the database for this user
     cur = conn.cursor()
     cur.execute("""
@@ -407,6 +387,31 @@ def get_recommendations():
 
     return jsonify(filtered_movies)
 
+@app.route('/plot.html')
+def plot_search():
+    return render_template('plot.html')
+
+@app.route('/plot_guess', methods=['POST'])
+def plot_guess():
+    data = request.get_json()
+    plot = data.get('plot')
+    if not plot:
+        return jsonify({"error": "Plot is required"}), 400
+    recommender = MovieRecommender(openai_key= openai_key)
+    guess = recommender.guess_movie(plot)
+    print(guess)
+    return jsonify({"guess": guess}), 200
+
+@app.route('/plot_recommend', methods=['POST'])
+def plot_recommend():
+    data = request.get_json()
+    plot = data.get('plot')
+    if not plot:
+        return jsonify({"error": "Plot is required"}), 400
+    recommender = MovieRecommender(openai_key= openai_key)
+    recommendations = recommender.rec_movie(plot)
+    print(recommendations)
+    return jsonify({"recommendations": recommendations}), 200
 
 @app.route('/get_user_preferences', methods=['GET'])
 def get_user_preferences():

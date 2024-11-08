@@ -161,68 +161,6 @@ document.addEventListener("DOMContentLoaded", async function () {
             showUpdatePreferenceForm(); // Otherwise show preference form
         }
     });
-
-/*
-async function showUpdatePreferenceForm() {
-    try {
-        // Fetch the preference form HTML from the backend
-        const response = await fetch('/get_preferences_form');
-        const formHtml = await response.text();
-        
-        // Append the form to the body without replacing existing content
-        document.body.insertAdjacentHTML('beforeend', formHtml);
-
-        // Fetch genres and subgenres from your PostgreSQL database
-        const genreResponse = await fetch('/api/get_genres_and_subgenres');
-        if (!genreResponse.ok) {
-            throw new Error('Failed to fetch genres and subgenres');
-        }
-        const genresData = await genreResponse.json();
-
-        const genresContainer = document.getElementById('genresContainer');
-
-// Populate genres and subgenres
-    genresData.forEach(genre => {
-    const genreDiv = document.createElement('div');
-    genreDiv.classList.add('genre-section');
-    
-    // Add the genre_id as a data attribute to the genre section
-    genreDiv.setAttribute('data-genre-id', genre.genre_id);  // Add this line
-    
-    const genreLabel = document.createElement('label');
-    genreLabel.textContent = genre.genre_name;
-    genreDiv.appendChild(genreLabel);
-
-    const subgenreContainer = document.createElement('div');
-    subgenreContainer.classList.add('subgenre-section');
-
-    genre.subgenres.forEach(subgenre => {
-        const subgenreDiv = document.createElement('div');
-        subgenreDiv.classList.add('subgenre-item');
-
-        const checkbox = document.createElement('input');
-        checkbox.type = 'checkbox';
-        checkbox.id = `subgenre-${subgenre.sub_genre_id}`;
-        checkbox.name = 'subgenres';
-        checkbox.value = subgenre.sub_genre_id;
-
-        const label = document.createElement('label');
-        label.htmlFor = `subgenre-${subgenre.sub_genre_id}`;
-        label.textContent = subgenre.sub_genre_name;
-
-        subgenreDiv.appendChild(checkbox);
-        subgenreDiv.appendChild(label);
-        subgenreContainer.appendChild(subgenreDiv);
-    });
-
-    genreDiv.appendChild(subgenreContainer);
-    genresContainer.appendChild(genreDiv);
-});
-
-        document.getElementById('preferencesModal').style.display = 'block';
-
-*/
-
 async function showUpdatePreferenceForm() {
     try {
         // Fetch the preference form HTML from the backend
@@ -383,7 +321,6 @@ async function showUpdatePreferenceForm() {
 
 <<<<<<< Updated upstream
 */
-=======
     // Genre Button Functionality
     genreButtons.forEach(button => {
         button.onclick = async function () {
@@ -393,7 +330,6 @@ async function showUpdatePreferenceForm() {
             displayResults(results);
         };
     });
->>>>>>> Stashed changes
 
 function displayResults(results) {
     resultsDiv.innerHTML = ''; // Clear previous results
@@ -401,25 +337,7 @@ function displayResults(results) {
         resultsDiv.innerHTML = '<p>No results found.</p>'; // No results message
         return;
     }
-/*
-    // Fetch movies by title and release_date
-    async function fetchMoviesbyReleasedate(query,releaseDate) {
-        const response = await fetch(`https://api.themoviedb.org/3/search/multi?api_key=${TMDB_API_KEY}&query=${query}`);
-        const data = await response.json();
-        const filteredMovies = data.results.filter(movie => movie.release_date === releaseDate);
 
-<<<<<<< Updated upstream
-    results.forEach(item => {
-        const resultItem = document.createElement('div');
-        resultItem.classList.add('result-item');
-        resultItem.setAttribute('data-id', item.id);
-=======
-            if (filteredMovies.length > 0) {
-                // Return the movie that matches both title and release date
-                return filteredMovies[0];  // Return the first matching movie
-            }  
-    }
-*/
     async function fetchMovieData(recommendations) {
             let moviesData = []
             const moviePromises = recommendations.map(async (rec) => {
@@ -444,14 +362,12 @@ function displayResults(results) {
     // Plot Search button functionality
     plotSearchBtn.addEventListener('click', async function () {
         const userPlot = plotSearch.value.trim();
->>>>>>> Stashed changes
 
         const poster = document.createElement('img');
         poster.src = item.poster_path ? `https://image.tmdb.org/t/p/w200${item.poster_path}` : 'path/to/default/image.jpg';
         poster.alt = item.title || item.name;
         resultItem.appendChild(poster);
 
-<<<<<<< Updated upstream
         const title = document.createElement('h3');
         title.textContent = item.title || item.name || item.original_title;
         resultItem.appendChild(title);
@@ -513,7 +429,6 @@ async function addToWatchlist(movie) {
         const result = await response.json();
         if (response.ok) {
             alert(result.message);
-=======
                 if (response.ok) {
                     const recommendations = await response.json();
                     await fetchMovieData(recommendations);
@@ -526,14 +441,12 @@ async function addToWatchlist(movie) {
                 console.error('Error:', error);
                 alert('There was a problem with the request.');
             }
->>>>>>> Stashed changes
         } else {
             alert(result.error || result.message);
         }
     } catch (error) {
         console.error('Error adding to watchlist:', error);
     }
-}
 
 
     // Populate filters (genres, years, countries, languages) from TMDB
@@ -582,7 +495,6 @@ async function addToWatchlist(movie) {
             console.error("Error fetching data:", error);
         }
     });
-<<<<<<< Updated upstream
 
     // TMDB API genre population (already exists)
     async function populateGenres() {
