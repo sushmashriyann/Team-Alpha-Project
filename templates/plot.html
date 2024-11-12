@@ -16,13 +16,10 @@
 
         <div id="search-container">
             <input type="text" id="plotSearchBox" placeholder="Enter the plot to find the movie">
-            <div class="button-container">
-                <button id="plotSearchBtn">Search</button>
-                <button id="recommendationBtn"> Get Recommendations</button>
-            </div>
+            <button id="plotSearchBtn">Search</button>
         </div>
 
-        <div id="results"></div>
-        <script src="{{ url_for('static', filename='plot_script.js') }}"></script>
+        <div id="results-container"></div>
+        <script src="{{ url_for('static', filename='plot.js') }}"></script>
     </body>
 </html>
