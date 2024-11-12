@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const plotSearchBtn = document.getElementById('plotSearchBtn');
     const plotSearchBox = document.getElementById('plotSearchBox');
     const recommendationBtn = document.getElementById('recommendationBtn');
-    const resultsContainer = document.getElementById('results-container');
+    const resultsContainer = document.getElementById('results');
 
     const TMDB_API_KEY = '242a2ba5f4ab590b9cc98651955f4509';
 
