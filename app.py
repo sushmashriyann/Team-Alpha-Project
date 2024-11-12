@@ -11,7 +11,7 @@ import datetime
 from dotenv import load_dotenv
 from flask_mail import Mail, Message
 import requests
-#from plot_rec import MovieRecommender
+from plot_rec import MovieRecommender
 from csv_plot_rec import MovieRecommender
 
 
