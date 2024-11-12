@@ -12,10 +12,9 @@ class MovieRecommender:
         self.model = ChatOpenAI(model=model_name, temperature=temperature)
         
         self.system_template = (
-            "Guess the movie from the plot: {input}. "
-            "Provide the top 5 movie recommendations like the plot in this format: "
-            "Guess: [Movie Title]"
-            "Recommendation: [Movie Title 1], [Movie Title 2], [Movie Title 3], [Movie Title 4], [Movie Title 5]"
+            "Guess the movie from the plot mentioned: {input}? "
+            "Give the title of the top 5 movie recommendations based on the plot."
+            "Display the results in the mentioned format Title: , Release Date: , Genre: ;"
         )
         
         self.parser = StrOutputParser()
