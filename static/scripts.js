@@ -161,68 +161,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             showUpdatePreferenceForm(); // Otherwise show preference form
         }
     });
-
-/*
-async function showUpdatePreferenceForm() {
-    try {
-        // Fetch the preference form HTML from the backend
-        const response = await fetch('/get_preferences_form');
-        const formHtml = await response.text();
-        
-        // Append the form to the body without replacing existing content
-        document.body.insertAdjacentHTML('beforeend', formHtml);
-
-        // Fetch genres and subgenres from your PostgreSQL database
-        const genreResponse = await fetch('/api/get_genres_and_subgenres');
-        if (!genreResponse.ok) {
-            throw new Error('Failed to fetch genres and subgenres');
-        }
-        const genresData = await genreResponse.json();
-
-        const genresContainer = document.getElementById('genresContainer');
-
-// Populate genres and subgenres
-    genresData.forEach(genre => {
-    const genreDiv = document.createElement('div');
-    genreDiv.classList.add('genre-section');
     
-    // Add the genre_id as a data attribute to the genre section
-    genreDiv.setAttribute('data-genre-id', genre.genre_id);  // Add this line
-    
-    const genreLabel = document.createElement('label');
-    genreLabel.textContent = genre.genre_name;
-    genreDiv.appendChild(genreLabel);
-
-    const subgenreContainer = document.createElement('div');
-    subgenreContainer.classList.add('subgenre-section');
-
-    genre.subgenres.forEach(subgenre => {
-        const subgenreDiv = document.createElement('div');
-        subgenreDiv.classList.add('subgenre-item');
-
-        const checkbox = document.createElement('input');
-        checkbox.type = 'checkbox';
-        checkbox.id = `subgenre-${subgenre.sub_genre_id}`;
-        checkbox.name = 'subgenres';
-        checkbox.value = subgenre.sub_genre_id;
-
-        const label = document.createElement('label');
-        label.htmlFor = `subgenre-${subgenre.sub_genre_id}`;
-        label.textContent = subgenre.sub_genre_name;
-
-        subgenreDiv.appendChild(checkbox);
-        subgenreDiv.appendChild(label);
-        subgenreContainer.appendChild(subgenreDiv);
-    });
-
-    genreDiv.appendChild(subgenreContainer);
-    genresContainer.appendChild(genreDiv);
-});
-
-        document.getElementById('preferencesModal').style.display = 'block';
-
-*/
-
 async function showUpdatePreferenceForm() {
     try {
         // Fetch the preference form HTML from the backend
@@ -315,7 +254,6 @@ async function showUpdatePreferenceForm() {
     }
 };
 
-
     // Fetch trending movies
     trendingLink.onclick = async function (e) {
         e.preventDefault();
@@ -344,7 +282,7 @@ async function showUpdatePreferenceForm() {
         return data.results.slice(0, 20); // Limit to top 20 results
     }
 
-/*    function displayResults(results) {
+    function displayResults(results) {
         resultsDiv.innerHTML = ''; // Clear previous results
         if (results.length === 0) {
             resultsDiv.innerHTML = '<p>No results found.</p>'; // No results message
@@ -381,8 +319,8 @@ async function showUpdatePreferenceForm() {
         });
     }
 
-*/
 
+/*
 function displayResults(results) {
     resultsDiv.innerHTML = ''; // Clear previous results
     if (results.length === 0) {
@@ -390,48 +328,29 @@ function displayResults(results) {
         return;
     }
 
-    results.forEach(item => {
-        const resultItem = document.createElement('div');
-        resultItem.classList.add('result-item');
-        resultItem.setAttribute('data-id', item.id);
+    async function fetchMovieData(recommendations) {
+            let moviesData = []
+            const moviePromises = recommendations.map(async (rec) => {
+                const query = encodeURIComponent(rec.title);
+                const response = await fetch(`https://api.themoviedb.org/3/search/multi?api_key=${TMDB_API_KEY}&query=${query}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.results && data.results.length > 0) {
+                        moviesData.push(data.results[0]); // Push the first result into moviesData
+                    }
+                    return data.results[0]; 
+                }
+                console.error('Error fetching from TMDB:', response.statusText);
+                return null; 
+            });
+        
+        const movieResults = await Promise.allSettled(moviePromises); 
+        const filteredResults = movieResults.filter(movie => movie);       
+        displayResults(moviesData); 
+    }
 
-        const poster = document.createElement('img');
-        poster.src = item.poster_path ? `https://image.tmdb.org/t/p/w200${item.poster_path}` : 'path/to/default/image.jpg';
-        poster.alt = item.title || item.name;
-        resultItem.appendChild(poster);
-
-        const title = document.createElement('h3');
-        title.textContent = item.title || item.name || item.original_title;
-        resultItem.appendChild(title);
-
-        const rating = document.createElement('p');
-        rating.textContent = `Rating: ${item.vote_average || 'N/A'}/10`;
-        resultItem.appendChild(rating);
-
-        const overview = document.createElement('p');
-        overview.textContent = item.overview || 'No overview available.';
-        resultItem.appendChild(overview);
-
-        // Add button to add to watchlist
-        const addButton = document.createElement('button');
-        addButton.textContent = 'Add to Watchlist';
-    //    addButton.onclick = () => addToWatchlist(item);
- resultItem.appendChild(addButton);
-addButton.onclick = (e) => {
-addToWatchlist(item); // Call the function to add to watchlist
-    e.stopPropagation(); // Prevent the event from bubbling up
-    
-};
-       
-
-        resultItem.onclick = () => {
-            window.location.href = `/movie/${item.id}`; // Redirect to movie details page
-        };
-
-        resultsDiv.appendChild(resultItem);
-    });
 }
-
+*/
    const watchlistDiv = document.getElementById('watchlist');
     if (watchlistDiv) {
         get_watchlist(); // Call this only if `#watchlist` exists
@@ -459,15 +378,33 @@ async function addToWatchlist(movie) {
         });
 
         const result = await response.json();
+        
         if (response.ok) {
+            try {
             alert(result.message);
-        } else {
+                if (response.ok) {
+                    const recommendations = await response.json();
+                    await fetchMovieData(recommendations);
+                } 
+                else {
+                    const errorData = await response.json();
+                    alert(errorData.error || 'An error occurred');
+                }
+            }
+            catch (error) {
+                console.error('Error:', error);
+                alert('There was a problem with the request.');
+            }
+        }
+        else {
             alert(result.error || result.message);
         }
-    } catch (error) {
+    }
+    catch (error) {
         console.error('Error adding to watchlist:', error);
     }
 }
+
 
 
     // Populate filters (genres, years, countries, languages) from TMDB
@@ -625,4 +562,5 @@ async function addToWatchlist(movie) {
     // Load trending movies on page load
     const initialMovies = await fetchTrendingMovies();
     displayResults(initialMovies);
+
 });
