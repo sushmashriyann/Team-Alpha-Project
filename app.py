@@ -12,7 +12,6 @@ from dotenv import load_dotenv
 from flask_mail import Mail, Message
 import requests
 from plot_rec import MovieRecommender
-from csv_plot_rec import MovieRecommender
 
 # Load environment variables
 load_dotenv()
@@ -518,15 +517,20 @@ def remove_from_watchlist():
         print(f"Error removing movie from watchlist: {e}")
         return jsonify({'error': 'Failed to remove movie'}), 500
 
-
-# Initialize and start the scheduler
-scheduler = BackgroundScheduler()
-scheduler.add_job(func=update_movie_list, trigger="interval", hours=24)
-scheduler.start()
-
 @app.route('/plot.html')
 def plot_search():
     return render_template('plot.html')
+
+@app.route('/plot_guess', methods=['POST'])
+def plot_guess():
+    data = request.get_json()
+    plot = data.get('plot')
+    if not plot:
+        return jsonify({"error": "Plot is required"}), 400
+    recommender = MovieRecommender(openai_key= openai_key)
+    guess = recommender.guess_movie(plot)
+    print(guess)
+    return jsonify({"guess": guess}), 200
 
 @app.route('/plot_recommend', methods=['POST'])
 def plot_recommend():
@@ -535,10 +539,8 @@ def plot_recommend():
     if not plot:
         return jsonify({"error": "Plot is required"}), 400
     recommender = MovieRecommender(openai_key= openai_key)
-    recommendations = recommender.recommend_movies(plot)
-    type(recommendations)
-    if isinstance(recommendations, str):
-        recommendations = recommendations.split(";")
+    recommendations = recommender.rec_movie(plot)
+    print(recommendations)
     return jsonify({"recommendations": recommendations}), 200
 
 
