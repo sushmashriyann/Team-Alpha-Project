@@ -1,0 +1,19 @@
+/* Style for the Watch Providers container */
+.watch-providers {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.rent-section, .buy-section {
+    width: 48%; /* Set each section to 48% width */
+}
+
+.watch-providers h3 {
+    margin-bottom: 10px;
+}
+
+.watch-providers ul {
+    list-style-type: none; /* Remove bullet points if desired */
+    padding-left: 0;
+}
