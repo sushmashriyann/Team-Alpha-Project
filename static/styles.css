@@ -164,6 +164,36 @@ button:hover {
     border-radius: 5px;
 }
 
+#plotSearchBox {
+    margin-top: 20px;
+    margin-right: 10px;
+    padding: 10px;
+    width: 300px;
+}
+
+#button-container {
+    display: flex;
+    padding: 10px;
+}
+
+.plotSearchBtn {
+    padding: 10px;
+    background-color: #ff6f61;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.recommendationBtn {
+    padding: 10px;
+    background-color: #ff6f61;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
 /* Results display styling */
 #results {
     margin-top: 20px;
@@ -171,6 +201,8 @@ button:hover {
     flex-wrap: wrap;
     gap: 20px;
     justify-content: space-around;
+    align-items: center; /* Align items vertically if necessary */
+
 }
 
 .result-item {
@@ -247,7 +279,7 @@ button:hover {
     margin-right: 20px; /* Space between buttons and results */
 }
 
-/* Results section will take up the remaining space */
+/* Results section will take up the remaining space 
 #results {
     flex-grow: 1;
     display: flex;
@@ -255,6 +287,7 @@ button:hover {
     gap: 20px;
     justify-content: flex-start;
 }
+*/
 
 /* Close modal button */
 .close-modal-btn {
@@ -335,15 +368,16 @@ button:hover {
     background-color: #f4f4f4; /* Optional: Add a background color to the filter section */
 }
 
-/* Ensure the results section grows and fills available space */
+/* Ensure the results section grows and fills available space 
 #results {
-    flex-grow: 1; /* Make results take up remaining space */
-    margin-left: 20px; /* Add some space between filters and results */
+    flex-grow: 1; /* Make results take up remaining space 
+    margin-left: 20px; /* Add some space between filters and results 
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
     justify-content: flex-start;
 }
+*/
 
 /* Style for the dropdowns and buttons for better presentation */
 #filters-section select,
