@@ -11,9 +11,7 @@ import datetime
 from dotenv import load_dotenv
 from flask_mail import Mail, Message
 import requests
-#from plot_rec import MovieRecommender
 from csv_plot_rec import MovieRecommender
-
 
 # Load environment variables
 load_dotenv()
@@ -361,7 +359,6 @@ def submit_preferences():
 def get_recommendations():
     user_id = get_logged_in_user_id()  # Assuming you have a way to get the logged-in user's ID
 
-    conn = get_db_connection()
     # Fetch genres and sub-genres from the database for this user
     cur = conn.cursor()
     cur.execute("""
@@ -387,6 +384,7 @@ def get_recommendations():
     filtered_movies = [movie for movie in movies if any(keyword in movie['overview'] for keyword in subgenre_keywords)]
 
     return jsonify(filtered_movies)
+
 
 @app.route('/get_user_preferences', methods=['GET'])
 def get_user_preferences():
@@ -494,7 +492,14 @@ def watchlist():
 
 @app.route('/recommended')
 def recommended():
+    # Check if user is logged in
+    if 'user_id' not in session:
+        # Render the recommended page with a login prompt message instead of returning JSON
+        return render_template('recommended.html', message='Please log in to see your recommendations.')
+
+    # Render the recommended page for logged-in users without any message
     return render_template('recommended.html')
+
 
 @app.route('/remove_from_watchlist', methods=['POST'])
 def remove_from_watchlist():
@@ -518,7 +523,6 @@ def remove_from_watchlist():
     except Exception as e:
         print(f"Error removing movie from watchlist: {e}")
         return jsonify({'error': 'Failed to remove movie'}), 500
-
 
 @app.route('/plot.html')
 def plot_search():
@@ -545,6 +549,7 @@ def plot_recommend():
     recommendations = recommender.rec_movie(plot)
     print(recommendations)
     return jsonify({"recommendations": recommendations}), 200
+
 
 # Initialize and start the scheduler
 scheduler = BackgroundScheduler()

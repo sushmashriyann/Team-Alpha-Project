@@ -1,6 +1,13 @@
 document.addEventListener("DOMContentLoaded", async function () {
     const TMDB_API_KEY = '242a2ba5f4ab590b9cc98651955f4509';
     const recommendedContainer = document.getElementById('recommended');
+    const loginMessage = document.getElementById('loginMessage'); // Check for login message
+
+    // If a login message is present, display it and skip loading recommendations
+    if (loginMessage) {
+        recommendedContainer.innerHTML = '<p>' + loginMessage.textContent + '</p>';
+        return;
+    }
 
     async function getUserPreferences() {
         try {
@@ -78,7 +85,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         });
     }
 
-    // Updated function to add a movie to the watchlist
+    // Function to add a movie to the watchlist
     function addToWatchlist(movieId, title, posterPath) {
         fetch('/add_to_watchlist', {
             method: 'POST',

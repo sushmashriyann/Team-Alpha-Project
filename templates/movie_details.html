@@ -19,12 +19,38 @@
             <div class="movie-poster">
                 <img src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}" alt="{{ movie.title }}">
             </div>
-            <div class="movie-info">
-                <h1>{{ movie.title }}</h1>
-                <p>Rating: {{ movie.vote_average }}/10</p>
-                <p>{{ movie.overview }}</p>
-            </div>
+<div class="movie-info">
+    <h1>{{ movie.title }}</h1>
+    <p><h3>Rating:</h3> {{ movie.vote_average }}/10</p>
+    <p>{{ movie.overview }}</p>
+    <p id="origin-country"> </p> <!-- New placeholder for origin country -->
+</div>
+
+
         </div>
+
+ <div class="filter-section">
+    <label for="country-filter">Select Country:</label>
+    <select id="country-filter"></select>
+</div>
+
+
+<div id="watch-providers" class="watch-providers">
+    <div class="rent-section">
+        <h3>Rent:</h3>
+        <ul id="rent-providers">
+            <!-- Rent providers will be dynamically inserted here -->
+        </ul>
+    </div>
+    <div class="buy-section">
+        <h3>Buy:</h3>
+        <ul id="buy-providers">
+            <!-- Buy providers will be dynamically inserted here -->
+        </ul>
+    </div>
+</div>
+
+
         <div class="movie-trailer">
             <h3>Trailer:</h3>
             {% if movie.videos.results %}
@@ -37,6 +63,17 @@
                 <p>No trailer available.</p>
             {% endif %}
         </div>
+
+
+<div id="reviews-section">
+    <h3>Reviews:</h3>
+    <div id="reviews-container">Loading reviews...</div>
+</div>
+
+
+
     </section>
+
+    <script src="{{ url_for('static', filename='watch_provider.js') }}"></script>
 </body>
 </html>

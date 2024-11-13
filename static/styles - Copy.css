@@ -1,0 +1,349 @@
+/* General body styling */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #ffe6e6; /* Light peach background */
+}
+
+/* Header styling */
+header {
+    display: flex;
+    justify-content: space-between;
+    padding: 1em;
+    background-color: #ff6f61; /* Peach color for header */
+    color: white;
+    align-items: center; /* Align items vertically */
+}
+
+/* Navigation styling */
+nav {
+    display: flex;
+    align-items: center; /* Center items in nav */
+}
+
+nav a {
+    color: white;
+    margin-left: 1em;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+nav a:hover {
+    color: #ffcc00; /* Change color on hover for better visibility */
+}
+
+/* User session styling */
+.user-session {
+    display: none; /* Hidden by default */
+    margin-left: 1em; /* Space between links and user session */
+    color: white; /* Color for the user icon and logout */
+}
+
+/* Logout button styling */
+.logout-btn {
+    background-color: #ff6f61; /* Peach color for logout button */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.logout-btn:hover {
+    background-color: #ff4d4d; /* Darker peach on hover */
+}
+
+/* Modal styling */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0, 0, 0, 0.5); /* Black with opacity */
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: white;
+    margin: 15% auto; /* 15% from the top and centered */
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+    width: 90%;
+    max-width: 400px; /* Limiting modal width */
+}
+
+.close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    color: #ff6f61; /* Peach color for close button */
+    font-size: 20px; /* Slightly larger close button */
+}
+
+.close:hover {
+    color: #ff3333; /* Change color on hover for visibility */
+}
+
+/* Input styling for forms */
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+    width: calc(100% - 20px); /* Full width with padding */
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* Button styling */
+button {
+    background-color: #ff6f61; /* Button color */
+    color: white; /* Button text color */
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #ff4d4d; /* Darker peach color on hover */
+}
+
+/* Added styles for Genre buttons */
+#genre-buttons {
+    display: flex;
+    flex-direction: column;  /* Stack buttons vertically */
+    width: 3in;  /* Fixed width of 3 inches for uniform size */
+    align-items: flex-start; /* Align buttons to the left */
+    margin-right: 20px;  /* Space between buttons and results */
+}
+
+.genre-btn {
+    background-color: #ff6f61; /* Button color */
+    color: white; /* Button text color */
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;  /* Ensure all buttons take up full width of 3 inches */
+    margin-bottom: 0.5cm;  /* Add spacing of 0.5 cm between buttons */
+}
+
+.genre-btn:hover {
+    background-color: #ff4d4d; /* Darker peach color on hover */
+}
+
+/* Search box styling */
+#search-container {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#searchBox {
+    margin-right: 10px;
+    padding: 10px;
+    width: 300px;
+}
+
+#searchBtn {
+    padding: 10px;
+    background-color: #ff6f61;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+/* Results display styling */
+#results {
+    margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: space-around;
+}
+
+.result-item {
+    background-color: #fff2f2;
+    border-radius: 5px;
+    padding: 10px;
+    width: 200px;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.result-item img {
+    width: 100%;
+    border-radius: 5px;
+}
+
+.result-item h3 {
+    font-size: 1.1em;
+    margin: 10px 0;
+}
+
+.result-item p {
+    margin: 5px 0;
+    font-size: 0.9em;
+}
+
+/* Align genre buttons to the left with a fixed width of 3 inches */
+#search-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+/* Search button directly below search box */
+#searchBox {
+    width: 300px; /* Adjust width if necessary */
+    margin-bottom: 10px; /* Add space between the box and button */
+}
+
+#searchBtn {
+    padding: 10px;
+    background-color: #ff6f61;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+/* Text to span the width of the screen */
+#info-text {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 18px;
+    width: 100%;
+}
+
+/* Genre buttons aligned to the left and results on the right */
+#search-and-genre-section {
+    display: flex;
+    justify-content: flex-start; /* Align the genre buttons to the left */
+    align-items: flex-start;
+    gap: 20px;
+    width: 100%; /* Full width of the screen */
+}
+
+/* Genre buttons taking 3 inches on the left */
+#genre-buttons {
+    display: flex;
+    flex-direction: column;
+    width: 3in; /* Fixed width of 3 inches */
+    align-items: flex-start; /* Align buttons to the left */
+    margin-right: 20px; /* Space between buttons and results */
+}
+
+/* Results section will take up the remaining space */
+#results {
+    flex-grow: 1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: flex-start;
+}
+
+/* Close modal button */
+.close-modal-btn {
+    background-color: #ff6f61;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 15px;
+    margin-top: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.close-modal-btn:hover {
+    background-color: #ff4d4d; /* Darker peach on hover */
+}
+
+/* Movie details section */
+#movie-details {
+    max-width: 1200px; /* Allows more space for content */
+    margin: auto;
+    padding: 20px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.movie-content {
+    display: flex;
+    gap: 20px; /* Space between poster and movie info */
+    align-items: flex-start; /* Align poster and text to the top */
+    width: 100%;
+}
+
+.movie-poster {
+    flex-shrink: 0; /* Prevent the poster from shrinking */
+    flex-grow: 0; /* Don't let the poster grow beyond its specified width */
+    margin-right: 20px; /* Space between the poster and the info */
+    max-width: 800px; /* Adjust this to control the max width of the poster */
+}
+
+.movie-poster img {
+    width: 100%; /* Make the image fill its container */
+    height: 400px; /* Control the height of the image */
+    border-radius: 5px;
+    object-fit: cover; /* Ensures the image covers the area while keeping its aspect ratio */
+}
+
+.movie-info {
+    flex: 1; /* Take up the remaining space next to the poster */
+}
+
+.movie-info h1 {
+    margin-top: 0;
+}
+
+.movie-info p {
+    margin: 10px 0;
+}
+
+.movie-trailer {
+    margin-top: 20px; /* Space between the info and the trailer */
+    text-align: center;
+}
+
+/* Ensure the entire section uses flexbox for layout */
+#search-and-genre-section {
+    display: flex; /* Use flexbox to keep filters on the left and results on the right */
+    justify-content: flex-start; /* Align items from the start (filters stay on the left) */
+}
+
+/* Ensure the filter section has a consistent width */
+#filters-section {
+    width: 250px; /* Set a fixed width for the filter section */
+    padding: 20px; /* Add some padding for better spacing */
+    box-sizing: border-box; /* Ensure padding doesn't affect the width */
+    background-color: #f4f4f4; /* Optional: Add a background color to the filter section */
+}
+
+/* Ensure the results section grows and fills available space */
+#results {
+    flex-grow: 1; /* Make results take up remaining space */
+    margin-left: 20px; /* Add some space between filters and results */
+}
+
+/* Style for the dropdowns and buttons for better presentation */
+#filters-section select,
+#filters-section button {
+    display: block;
+    width: 100%; /* Make dropdowns and buttons take the full width of the filter section */
+    margin-bottom: 15px; /* Add space between each filter item */
+}

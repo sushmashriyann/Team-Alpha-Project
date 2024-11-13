@@ -150,42 +150,13 @@ button:hover {
 }
 
 #searchBox {
+    margin-top: 10px;
     margin-right: 10px;
     padding: 10px;
     width: 300px;
 }
 
 #searchBtn {
-    padding: 10px;
-    background-color: #ff6f61;
-    color: white;
-    border: none;
-    cursor: pointer;
-    border-radius: 5px;
-}
-
-#plotSearchBox {
-    margin-top: 20px;
-    margin-right: 10px;
-    padding: 10px;
-    width: 300px;
-}
-
-#button-container {
-    display: flex;
-    padding: 10px;
-}
-
-.plotSearchBtn {
-    padding: 10px;
-    background-color: #ff6f61;
-    color: white;
-    border: none;
-    cursor: pointer;
-    border-radius: 5px;
-}
-
-.recommendationBtn {
     padding: 10px;
     background-color: #ff6f61;
     color: white;
@@ -201,8 +172,6 @@ button:hover {
     flex-wrap: wrap;
     gap: 20px;
     justify-content: space-around;
-    align-items: center; /* Align items vertically if necessary */
-
 }
 
 .result-item {
@@ -239,9 +208,11 @@ button:hover {
 }
 
 /* Search button directly below search box */
-#searchBox {
+#plotSearchBox {
+    margin-right: 10px;
+    padding: 10px;
     width: 300px; /* Adjust width if necessary */
-    margin-bottom: 10px; /* Add space between the box and button */
+    margin-top: 10px; /* Add space between the box and button */
 }
 
 #searchBtn {
@@ -279,7 +250,7 @@ button:hover {
     margin-right: 20px; /* Space between buttons and results */
 }
 
-/* Results section will take up the remaining space 
+/* Results section will take up the remaining space */
 #results {
     flex-grow: 1;
     display: flex;
@@ -287,7 +258,6 @@ button:hover {
     gap: 20px;
     justify-content: flex-start;
 }
-*/
 
 /* Close modal button */
 .close-modal-btn {
@@ -368,16 +338,15 @@ button:hover {
     background-color: #f4f4f4; /* Optional: Add a background color to the filter section */
 }
 
-/* Ensure the results section grows and fills available space 
+/* Ensure the results section grows and fills available space */
 #results {
-    flex-grow: 1; /* Make results take up remaining space 
-    margin-left: 20px; /* Add some space between filters and results 
+    flex-grow: 1; /* Make results take up remaining space */
+    margin-left: 20px; /* Add some space between filters and results */
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
     justify-content: flex-start;
 }
-*/
 
 /* Style for the dropdowns and buttons for better presentation */
 #filters-section select,
@@ -505,4 +474,50 @@ button:hover {
 }
 #remove-watchlist-button.button-watchlist-remove:hover {
     background-color: #c9302c !important; /* Darker red hover color */
+}
+
+
+/* Style for the Watch Providers container */
+
+.providers-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.providers-list {
+    width: 48%; /* Adjust width to fit within the container */
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.load-more {
+    display: block;
+    margin: 20px auto;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+#watch-providers {
+    display: flex;
+    justify-content: space-between; /* Distribute space between the sections */
+    gap: 20px; /* Add space between the sections */
+}
+
+.rent-section, .buy-section {
+    width: 48%; /* Set each section to 48% width, leaving room for the gap */
+}
+
+.rent-section ul, .buy-section ul {
+    padding-left: 0; /* Remove default padding from the list */
+    list-style-type: none; /* Remove bullet points */
+}
+
+.rent-section h3, .buy-section h3 {
+    margin-bottom: 10px; /* Space between header and list */
 }
