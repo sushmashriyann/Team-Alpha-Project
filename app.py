@@ -95,7 +95,7 @@ def logout():
 def home():
     return render_template('index.html')
 
-# Sign-up route
+# Sign-up Route
 @app.route('/signup', methods=['POST'])
 def signup():
     data = request.get_json()
@@ -325,6 +325,7 @@ def get_recommendations():
 
     return jsonify(filtered_movies)
 
+
 @app.route('/get_user_preferences', methods=['GET'])
 def get_user_preferences():
     if 'user_id' in session:
@@ -489,6 +490,7 @@ def plot_recommend():
     print(recommendations)
     return jsonify({"recommendations": recommendations}), 200
 
+# Guest Login Route
 @app.route('/guest', methods=['POST'])
 def guestLogin():
     try:
@@ -505,7 +507,7 @@ def guestLogin():
         print(f"Error: {e}")
         return jsonify({"error": "An error occurred during guest sign-in."}), 500
 
-# Forgot username route
+# Forgot Username Route
 @app.route('/forgot-username', methods=['POST'])
 def forgot_username():
     data = request.get_json()
@@ -548,7 +550,7 @@ def forgot_username():
         print(f"Error: {e}") 
         return jsonify({"error": "An internal server error occurred."}), 500
 
-# Forgot password route
+# Forgot Password Route
 @app.route('/forgot-password', methods=['POST'])
 def forgot_password():
     data = request.get_json()
@@ -603,7 +605,7 @@ def forgot_password():
         print(f"Error: {e}")
         return jsonify({"error": "An internal server error occurred."}), 500
 
-# Reset password route
+# Reset Password Route
 @app.route('/reset-password', methods=['GET', 'POST'])
 def reset_password():
     if request.method == 'GET':
@@ -669,171 +671,6 @@ def reset_password():
         except Exception as e:
             print(f"Error: {e}")
             return jsonify({"error": "An error occurred while resetting the password"}), 500
-
-@app.route('/get_user_preferences', methods=['GET'])
-def get_user_preferences():
-    if 'user_id' in session:
-        user_id = session['user_id']
-        try:
-            conn = get_db_connection()
-            cur = conn.cursor()
-            cur.execute("""
-                SELECT genre_id, sub_genre_id 
-                FROM alpha.user_preferences 
-                WHERE user_id = %s
-            """, (user_id,))
-            preferences = cur.fetchall()
-            cur.close()
-            conn.close()
-
-            # Format the response as a list of dictionaries
-            user_preferences = [{"genre_id": pref[0], "sub_genre_id": pref[1]} for pref in preferences]
-            return jsonify(user_preferences), 200
-        except Exception as e:
-            return jsonify({"error": str(e)}), 500
-    else:
-        return jsonify({"error": "User not logged in."}), 401
-
-@app.route('/add_to_watchlist', methods=['POST'])
-def add_to_watchlist():
-    if 'user_id' not in session:
-        return jsonify({"error": "User not logged in"}), 401
-
-    user_id = session['user_id']
-    movie_id = request.json['movie_id']
-    movie_title = request.json['title']
-    poster_path = request.json['poster_path']
-
-    try:
-        conn = get_db_connection()
-        cur = conn.cursor()
-
-        # Check if the movie is already in the user's watchlist
-        cur.execute("SELECT * FROM alpha.user_watchlist WHERE user_id = %s AND movie_id = %s", (user_id, movie_id))
-        if cur.fetchone():
-            return jsonify({"message": "Movie already in watchlist"}), 200
-
-        # Insert movie into the watchlist
-        cur.execute("""
-            INSERT INTO alpha.user_watchlist (user_id, movie_id, movie_title, poster_path)
-            VALUES (%s, %s, %s, %s)
-        """, (user_id, movie_id, movie_title, poster_path))
-        conn.commit()
-
-        cur.close()
-        conn.close()
-
-        return jsonify({"message": "Movie added to watchlist"}), 201
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
-@app.route('/get_watchlist', methods=['GET'])
-def get_watchlist():
-    if 'user_id' not in session:
-        return jsonify({'error': 'Unauthorized'}), 401
-
-    user_id = session['user_id']
-    print(f"Fetching watchlist for user_id: {user_id}")  # Debugging line
-
-    try:
-        conn = get_db_connection()
-        print("Database connection successful.")  # Debugging line
-        cur = conn.cursor()
-
-        # Adjust the SQL query to reflect the correct table and column names
-        cur.execute(""" 
-            SELECT movie_id, movie_title, poster_path 
-            FROM alpha.user_watchlist 
-            WHERE user_id = %s 
-        """, (user_id,))
-        
-        watchlist = cur.fetchall()
-        cur.close()
-        conn.close()
-
-        if not watchlist:
-            print("Watchlist is empty for user_id: {}".format(user_id))  # Debugging line
-            return jsonify([])
-
-        watchlist_data = [
-            {
-                'movie_id': row[0],
-                'title': row[1],
-                'poster_path': row[2]
-            }
-            for row in watchlist
-        ]
-        return jsonify(watchlist_data)
-
-    except Exception as e:
-        print(f"Error fetching watchlist: {e}")  # Log the error for debugging
-        return jsonify({'error': str(e)}), 500  # Include the error message in the response
-
-
-@app.route('/watchlist')
-def watchlist():
-    return render_template('watchlist.html')
-
-@app.route('/recommended')
-def recommended():
-    # Check if user is logged in
-    if 'user_id' not in session:
-        # Render the recommended page with a login prompt message instead of returning JSON
-        return render_template('recommended.html', message='Please log in to see your recommendations.')
-
-    # Render the recommended page for logged-in users without any message
-    return render_template('recommended.html')
-
-
-@app.route('/remove_from_watchlist', methods=['POST'])
-def remove_from_watchlist():
-    if 'user_id' not in session:
-        return jsonify({'error': 'Unauthorized'}), 401
-
-    user_id = session['user_id']
-    movie_id = request.json.get('movie_id')
-
-    if not movie_id:
-        return jsonify({'error': 'No movie_id provided'}), 400
-
-    try:
-        conn = get_db_connection()
-        cur = conn.cursor()
-        cur.execute("DELETE FROM alpha.user_watchlist WHERE user_id = %s AND movie_id = %s", (user_id, movie_id))
-        conn.commit()
-        cur.close()
-        conn.close()
-        return jsonify({'message': 'Movie removed from watchlist'}), 200
-    except Exception as e:
-        print(f"Error removing movie from watchlist: {e}")
-        return jsonify({'error': 'Failed to remove movie'}), 500
-
-@app.route('/plot.html')
-def plot_search():
-    return render_template('plot.html')
-
-@app.route('/plot_guess', methods=['POST'])
-def plot_guess():
-    data = request.get_json()
-    plot = data.get('plot')
-    if not plot:
-        return jsonify({"error": "Plot is required"}), 400
-    recommender = MovieRecommender(openai_key= openai_key)
-    guess = recommender.guess_movie(plot)
-    print(guess)
-    return jsonify({"guess": guess}), 200
-
-@app.route('/plot_recommend', methods=['POST'])
-def plot_recommend():
-    data = request.get_json()
-    plot = data.get('plot')
-    if not plot:
-        return jsonify({"error": "Plot is required"}), 400
-    recommender = MovieRecommender(openai_key= openai_key)
-    recommendations = recommender.rec_movie(plot)
-    print(recommendations)
-    return jsonify({"recommendations": recommendations}), 200
-
 
 # Initialize and start the scheduler
 scheduler = BackgroundScheduler()
