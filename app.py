@@ -492,7 +492,14 @@ def watchlist():
 
 @app.route('/recommended')
 def recommended():
+    # Check if user is logged in
+    if 'user_id' not in session:
+        # Render the recommended page with a login prompt message instead of returning JSON
+        return render_template('recommended.html', message='Please log in to see your recommendations.')
+
+    # Render the recommended page for logged-in users without any message
     return render_template('recommended.html')
+
 
 @app.route('/remove_from_watchlist', methods=['POST'])
 def remove_from_watchlist():

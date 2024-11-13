@@ -16,10 +16,15 @@
     </header>
     <main>
         <h1>Recommended Movies for You</h1>
-        <!-- Recommended movies section with movie items structured for alignment -->
-        <div id="recommended" class="results-container">
-            <!-- Movie items will be populated by recommendation.js with "Add to Watchlist" buttons -->
-        </div>
+        
+        {% if message %}
+            <p>{{ message }}</p>
+        {% else %}
+            <!-- Recommended movies section with movie items structured for alignment -->
+            <div id="recommended" class="results-container">
+                <!-- Movie items will be populated by recommendation.js with "Add to Watchlist" buttons -->
+            </div>
+        {% endif %}
     </main>
     <script src="{{ url_for('static', filename='recommendation.js') }}"></script>
 </body>
