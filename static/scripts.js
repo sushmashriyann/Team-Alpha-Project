@@ -70,11 +70,11 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
 
     // Handle Sign-Up Form Submission
-    document.getElementById('signUpForm').onsubmit = async function (e) {
+    document.getElementById('signUpForm').addEventListener('submit', async function (e) {
         e.preventDefault();
         const password = document.getElementById('password').value;
         const confirmPassword = document.getElementById('confirm_password').value;
-
+    
         if (password !== confirmPassword) {
             document.getElementById('password-error').style.display = 'block';
         } else {
@@ -104,7 +104,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                 console.error('Sign-Up error:', error);
             }
         }
-    };
+    });
 
     // Handle Sign-In Form Submission
     document.getElementById('signInForm').onsubmit = async function (e) {

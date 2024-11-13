@@ -168,7 +168,7 @@ document.getElementById('getRecommendationsBtn').onclick = async function () {
         <form id="forgotPasswordForm" onsubmit="submitForgotPassword(); return false;">
             <input type="email" id="recover_password_email" placeholder="Enter your email" required>
             <button type="submit">Submit</button>
-            <button type="button" class="close-modal-btn" onclick="document.getElementById('forgotPasswordModal').style.display='none'">Close</button>
+            <button type="button" class="close-modal-btn" id="closeForgotPassword">Close</button>
             <span id="forgotPasswordSpinner" class="spinner" style="display:none;"></span>
         </form>
     </div>
