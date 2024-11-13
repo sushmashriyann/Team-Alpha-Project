@@ -69,7 +69,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         }
     }
 
-    // Handle Sign-Up form submission
+    // Handle Sign-Up Form Submission
     document.getElementById('signUpForm').onsubmit = async function (e) {
         e.preventDefault();
         const password = document.getElementById('password').value;
@@ -95,10 +95,10 @@ document.addEventListener("DOMContentLoaded", async function () {
                 });
                 const result = await response.json();
                 if (response.ok) {
-                    alert(result.message); // Show success message
-                    closeModal(signUpModal); // Close Sign-Up modal
+                    alert(result.message);
+                    closeModal(signUpModal);
                 } else {
-                    alert(result.error); // Show error message
+                    alert(result.error);
                 }
             } catch (error) {
                 console.error('Sign-Up error:', error);
@@ -106,7 +106,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         }
     };
 
-    // Handle Sign-In form submission
+    // Handle Sign-In Form Submission
     document.getElementById('signInForm').onsubmit = async function (e) {
         e.preventDefault();
         const user = {
@@ -122,11 +122,11 @@ document.addEventListener("DOMContentLoaded", async function () {
             });
             const result = await response.json();
             if (response.ok) {
-                updateUserInfo(result.initials || "User"); // Show initials or default to "User"
-                closeModal(signInModal); // Close the sign-in modal
-                hideSignInUpButtons(); // Hide Sign-Up and Sign-In buttons after successful login
+                updateUserInfo(result.initials || "User");
+                closeModal(signInModal);
+                hideSignInUpButtons(); 
             } else {
-                alert(result.error); // Show error message
+                alert(result.error);
             }
         } catch (error) {
             console.error('Sign-In error:', error);
@@ -371,7 +371,7 @@ async function showUpdatePreferenceForm() {
         return data.results.slice(0, 20); // Limit to top 20 results
     }
 
-    function displayResults(results) {
+/*    function displayResults(results) {
         resultsDiv.innerHTML = ''; // Clear previous results
         if (results.length === 0) {
             resultsDiv.innerHTML = '<p>No results found.</p>'; // No results message
@@ -407,6 +407,95 @@ async function showUpdatePreferenceForm() {
             resultsDiv.appendChild(resultItem);
         });
     }
+
+*/
+
+function displayResults(results) {
+    resultsDiv.innerHTML = ''; // Clear previous results
+    if (results.length === 0) {
+        resultsDiv.innerHTML = '<p>No results found.</p>'; // No results message
+        return;
+    }
+
+    results.forEach(item => {
+        const resultItem = document.createElement('div');
+        resultItem.classList.add('result-item');
+        resultItem.setAttribute('data-id', item.id);
+
+        const poster = document.createElement('img');
+        poster.src = item.poster_path ? `https://image.tmdb.org/t/p/w200${item.poster_path}` : 'path/to/default/image.jpg';
+        poster.alt = item.title || item.name;
+        resultItem.appendChild(poster);
+
+        const title = document.createElement('h3');
+        title.textContent = item.title || item.name || item.original_title;
+        resultItem.appendChild(title);
+
+        const rating = document.createElement('p');
+        rating.textContent = `Rating: ${item.vote_average || 'N/A'}/10`;
+        resultItem.appendChild(rating);
+
+        const overview = document.createElement('p');
+        overview.textContent = item.overview || 'No overview available.';
+        resultItem.appendChild(overview);
+
+        // Add button to add to watchlist
+        const addButton = document.createElement('button');
+        addButton.textContent = 'Add to Watchlist';
+    //    addButton.onclick = () => addToWatchlist(item);
+ resultItem.appendChild(addButton);
+addButton.onclick = (e) => {
+addToWatchlist(item); // Call the function to add to watchlist
+    e.stopPropagation(); // Prevent the event from bubbling up
+    
+};
+       
+
+        resultItem.onclick = () => {
+            window.location.href = `/movie/${item.id}`; // Redirect to movie details page
+        };
+
+        resultsDiv.appendChild(resultItem);
+    });
+}
+
+   const watchlistDiv = document.getElementById('watchlist');
+    if (watchlistDiv) {
+        get_watchlist(); // Call this only if `#watchlist` exists
+    }
+
+    const signUpForm = document.getElementById('signUpForm');
+    if (signUpForm) {
+        signUpForm.onsubmit = async function (e) {
+            // Handle form submission
+        };
+    }
+
+async function addToWatchlist(movie) {
+    try {
+        const response = await fetch('/add_to_watchlist', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                movie_id: movie.id,
+                title: movie.title || movie.name,
+                poster_path: movie.poster_path
+            })
+        });
+
+        const result = await response.json();
+        if (response.ok) {
+            alert(result.message);
+        } else {
+            alert(result.error || result.message);
+        }
+    } catch (error) {
+        console.error('Error adding to watchlist:', error);
+    }
+}
+
 
     // Populate filters (genres, years, countries, languages) from TMDB
     await populateGenres();  // This is the TMDB API genre call

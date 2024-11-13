@@ -33,7 +33,7 @@ def get_output_results(model, movies, user_plot, plot_embeddings):
     user_embedding = model.encode(user_plot, convert_to_tensor=True).to(device)
     cosine_scores = util.pytorch_cos_sim(user_embedding, plot_embeddings)[0]
     cosine_scores_np = cosine_scores.cpu().numpy()
-    top_k = 10
+    top_k = 5
     top_results = np.argsort(cosine_scores_np)[-top_k:][::-1]
     recommendations = []
     # Display the top-k recommended movies
@@ -45,8 +45,8 @@ def get_output_results(model, movies, user_plot, plot_embeddings):
         print(f"Title: {title}, Release Date: {release_date}, Similarity Score: {similarity_score:.4f}")
         recommendations.append({
             "title": title,
-            "release_date": release_date,
-            "similarity_score": f"{similarity_score:.4f}"
+            "release_date": release_date
+            #"similarity_score": f"{similarity_score:.4f}"
         })
     return recommendations  # Return top results for potential further processing
 

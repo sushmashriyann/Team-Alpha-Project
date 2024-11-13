@@ -10,7 +10,10 @@
     <header>
         <div class="logo">Moviecom</div>
         <nav>
+	    <a href="{{ url_for('recommended') }}">Recommended For You</a> 
+            <a href="{{ url_for('watchlist') }}">Watchlist</a>
             <a href="#" id="trendingLink">Trending Now  </a>
+            <a href="plot.html" id="plotSearchDialogue">Plot Search</a> 
             <a href="#" id="signUpBtn">Sign Up</a>
             <a href="#" id="signInBtn">Sign In</a>
 	    <a href="#" id="updatePreferenceLink" style="display:none;">Update Preference</a> 
@@ -81,8 +84,6 @@
 
         <div id="results"></div> 
     </section>
-
-<button id="getRecommendationsBtn">Movies Recommended for You</button>
 
 <script>
 document.getElementById('getRecommendationsBtn').onclick = async function () {
