@@ -11,7 +11,7 @@ import datetime
 from dotenv import load_dotenv
 from flask_mail import Mail, Message
 import requests
-from plot_rec import MovieRecommender
+from csv_plot_rec import MovieRecommender
 
 # Load environment variables
 load_dotenv()
@@ -25,11 +25,11 @@ CORS(app)
 app.secret_key = os.getenv('FLASK_SECRET_KEY', 'default_secret_key')  # Use an environment variable for the secret key
 
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
-app.config['MAIL_PORT'] = 587
-app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USERNAME'] = 'moviewebcom1@gmail.com'  # Replace with your Gmail address
-app.config['MAIL_PASSWORD'] = 'qvhj tvho ibnx kdmp'      # Replace with the Gmail app password
-app.config['MAIL_DEFAULT_SENDER'] = 'moviewebcom1@gmail.com'  # Replace with the same Gmail address
+app.config['MAIL_PORT'] = 587  # Keeping the port fixed
+app.config['MAIL_USE_TLS'] = True  # TLS is typically True for Gmail
+app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
+app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
+app.config['MAIL_DEFAULT_SENDER'] = os.getenv('MAIL_DEFAULT_SENDER')
 mail = Mail(app)
 
 # Database connection function
@@ -494,19 +494,32 @@ def plot_recommend():
 @app.route('/guest', methods=['POST'])
 def guestLogin():
     try:
-        guest_user_id = 0  
-        initials = "G"
-        name = "Guest"
-
-        session['user_id'] = guest_user_id 
-        session['initials'] = initials  
+        # Fetch the 'Guest' user details from the database
+        guest_username = 'Guest'
+        guest_password = 'guest'  # The plain password you want to check
         
-        return jsonify({"message": "Guest login successful!", "initials": initials, "name": name})
+        with get_db_connection() as conn:
+            with conn.cursor(cursor_factory=RealDictCursor) as cursor:
+                cursor.execute(""" 
+                    SELECT user_id, first_name, last_name, password_hash 
+                    FROM alpha.User_Details 
+                    WHERE username = %s
+                """, (guest_username,))
+                user = cursor.fetchone()
+
+                if user and check_password_hash(user['password_hash'], guest_password):
+                    initials = f"{user['first_name'][0]}{user['last_name'][0]}"
+                    session['user_id'] = user['user_id']  # Store user_id for future use
+                    session['initials'] = initials  # Store initials instead of username
+                    
+                    return jsonify({"message": "Guest login successful!", "initials": initials, "name": "Guest"})
+                else:
+                    return jsonify({"error": "Invalid guest credentials"}), 401
 
     except Exception as e:
         print(f"Error: {e}")
         return jsonify({"error": "An error occurred during guest sign-in."}), 500
-
+        
 # Forgot Username Route
 @app.route('/forgot-username', methods=['POST'])
 def forgot_username():
