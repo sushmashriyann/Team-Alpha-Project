@@ -624,7 +624,7 @@ def reset_password():
     if request.method == 'GET':
         token = request.args.get('token')
         if not token:
-            return jsonify({"error": "Token is required"}), 400
+            return jsonify({"error": "Token is required."}), 400
         return render_template('reset_password.html', token=token)
     
     elif request.method == 'POST':
@@ -633,7 +633,7 @@ def reset_password():
         new_password = data.get('new_password')
 
         if not token or not new_password:
-            return jsonify({"error": "Token and new password are required"}), 400
+            return jsonify({"error": "Token and new password are required."}), 400
 
         try:
             decoded_token = jwt.decode(token, app.secret_key, algorithms=["HS256"])
@@ -641,7 +641,7 @@ def reset_password():
 
             with get_db_connection() as conn:
                 with conn.cursor(cursor_factory=RealDictCursor) as cursor:
-                    cursor.execute("""
+                    cursor.execute(""" 
                         SELECT * FROM alpha.Password_Reset 
                         WHERE user_id = %s AND reset_token = %s AND expires_at > %s
                     """, (user_id, token, datetime.datetime.utcnow()))
@@ -649,11 +649,11 @@ def reset_password():
                     token_data = cursor.fetchone()
 
                     if not token_data:
-                        return jsonify({"error": "Invalid or expired token"}), 400
+                        return jsonify({"error": "Invalid or expired token."}), 400
 
                     hashed_password = generate_password_hash(new_password)
 
-                    cursor.execute("""
+                    cursor.execute(""" 
                         UPDATE alpha.User_Details 
                         SET password_hash = %s  
                         WHERE user_id = %s
@@ -665,12 +665,12 @@ def reset_password():
                     return jsonify({"message": "Password has been reset successfully!"}), 200
 
         except jwt.ExpiredSignatureError:
-            return jsonify({"error": "The token has expired"}), 400
+            return jsonify({"error": "The token has expired."}), 400
         except jwt.InvalidTokenError:
-            return jsonify({"error": "Invalid token"}), 400
+            return jsonify({"error": "Invalid token."}), 400
         except Exception as e:
             print(f"Error: {e}")
-            return jsonify({"error": "An error occurred while resetting the password"}), 500
+            return jsonify({"error": "An error occurred while resetting the password."}), 500
 
 # Initialize and start the scheduler
 scheduler = BackgroundScheduler()

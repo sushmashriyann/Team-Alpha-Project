@@ -161,7 +161,7 @@ document.getElementById('getRecommendationsBtn').onclick = async function () {
 </div>
 
 <!-- Forgot Password Modal -->
-<div id="forgotPasswordModal" class="modal" role="dialog" aria-labelledby="forgotPasswordModalTitle" aria-modal="true">
+<div id="forgotPasswordModal" class="modal" role="dialog" aria-labelledby="forgotPasswordModalTitle" aria-modal="true" style="display: flex;">
     <div class="modal-content">
         <span class="close">&times;</span>
         <h2 id="forgotPasswordModalTitle">Recover Password</h2>
@@ -185,6 +185,14 @@ document.getElementById('getRecommendationsBtn').onclick = async function () {
 </div>
 
 <script>
+    window.onload = () => {
+        const forgotPasswordModal = document.getElementById("forgotPasswordModal");
+        
+        if (forgotPasswordModal.style.display === "flex") {
+            forgotPasswordModal.style.display = "none";
+        }
+    };
+
     async function submitForgotUsername() {
         const email = document.getElementById("recover_username_email").value;
         const spinner = document.getElementById("forgotUsernameSpinner");
