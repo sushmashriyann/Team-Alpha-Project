@@ -69,6 +69,13 @@ document.addEventListener("DOMContentLoaded", async function () {
         }
     }
 
+    function resetFormFields(formId) {
+        document.getElementById(formId).reset();
+        if (formId === 'signUpForm') {
+            document.getElementById('password-error').style.display = 'none';
+        }
+    }
+
     // Handle Sign-Up Form Submission
     document.getElementById('signUpForm').addEventListener('submit', async function (e) {
         e.preventDefault();
@@ -97,6 +104,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                 if (response.ok) {
                     alert(result.message);
                     closeModal(signUpModal);
+                    resetFormFields('signUpForm');
                 } else {
                     alert(result.error);
                 }
@@ -125,6 +133,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                 updateUserInfo(result.initials || "User");
                 closeModal(signInModal);
                 hideSignInUpButtons(); 
+                resetFormFields('signInForm');
             } else {
                 alert(result.error);
             }
@@ -132,6 +141,26 @@ document.addEventListener("DOMContentLoaded", async function () {
             console.error('Sign-In error:', error);
         }
     };
+
+    document.getElementById('closeSignUp').addEventListener('click', function () {
+        resetFormFields('signUpForm');
+        closeModal(signUpModal);
+    });
+
+    document.getElementById('closeSignIn').addEventListener('click', function () {
+        resetFormFields('signInForm');
+        closeModal(signInModal);
+    });
+
+    document.querySelector('#signUpModal .close').addEventListener('click', function () {
+        resetFormFields('signUpForm');
+        closeModal(signUpModal);
+    });
+    
+    document.querySelector('#signInModal .close').addEventListener('click', function () {
+        resetFormFields('signInForm');
+        closeModal(signInModal);
+    });
 
     // Handle Guest Login
     document.getElementById('guestLoginButton').onclick = async function () {
