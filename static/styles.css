@@ -532,7 +532,26 @@ ul {
     vertical-align: middle;
 }
 
+#searchSpinner {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #ff6f61;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    animation: spin 2s linear infinite;
+    margin-left: 10px;
+    vertical-align: middle;
+    position: absolute;
+    top: 3px; /* Adjust to vertically align spinner with buttons */
+    transform: translateY(-3px); /* Fine-tune the vertical position if needed */
+}
+
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+}
+
+.button-container {
+    display: inline-block; /* Original inline behavior */
+    position: relative; /* Position relative for absolute spinner placement */
 }

@@ -19,11 +19,15 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
+        searchSpinner.style.display = 'inline-block';
+
         try {
             const guess = await fetchGuess(plot);
             displayplotResults(guess);
         } catch (error) {
             displayplotMessage(`Error: ${error.message}`);
+        } finally {
+            searchSpinner.style.display = 'none';
         }
     });
 
@@ -79,11 +83,15 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
+        searchSpinner.style.display = 'inline-block';
+
         try {
             const recommendations = await fetchRecommendations(plot);
             displayplotResults(recommendations);
         } catch (error) {
             displayplotMessage(`Error: ${error.message}`);
+        } finally {
+            searchSpinner.style.display = 'none';
         }
     });
 
