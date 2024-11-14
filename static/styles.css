@@ -135,7 +135,7 @@ button:hover {
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    width: 100%;  /* Ensure all buttons take up full width of 3 inches */
+    width: 100%;  /* all buttons take up full width of 3 inches */
     margin-bottom: 0.5cm;  /* Add spacing of 0.5 cm between buttons */
 }
 
@@ -293,14 +293,14 @@ button:hover {
     flex-shrink: 0; /* Prevent the poster from shrinking */
     flex-grow: 0; /* Don't let the poster grow beyond its specified width */
     margin-right: 20px; /* Space between the poster and the info */
-    max-width: 800px; /* Adjust this to control the max width of the poster */
+    max-width: 800px; /* Adjust to control the max width of the poster */
 }
 
 .movie-poster img {
     width: 100%; /* Make the image fill its container */
     height: 400px; /* Control the height of the image */
     border-radius: 5px;
-    object-fit: cover; /* Ensures the image covers the area while keeping its aspect ratio */
+    object-fit: cover; /* image covers the area while keeping its aspect ratio */
 }
 
 .movie-info {
@@ -320,22 +320,22 @@ button:hover {
     text-align: center;
 }
 
-/* Ensure the entire section uses flexbox for layout */
+/* entire section uses flexbox for layout */
 #search-and-genre-section {
     display: flex; /* Use flexbox to keep filters on the left and results on the right */
     justify-content: flex-start; /* Align items from the start (filters stay on the left) */
 }
 
-/* Ensure the filter section has a consistent width */
+/* filter section has a consistent width */
 #filters-section {
     width: 250px; /* Set a fixed width for the filter section */
     min-width: 250px;
     padding: 20px; /* Add some padding for better spacing */
-    box-sizing: border-box; /* Ensure padding doesn't affect the width */
+    box-sizing: border-box; /*padding doesn't affect the width */
     background-color: #f4f4f4; /* Optional: Add a background color to the filter section */
 }
 
-/* Ensure the results section grows and fills available space */
+/* results section grows and fills available space */
 #results {
     flex-grow: 1; /* Make results take up remaining space */
     margin-left: 20px; /* Add some space between filters and results */
@@ -445,7 +445,7 @@ button:hover {
     margin: 5px 0;
 }
 
-/* Highly specific Add to Watchlist button style */
+/* Add to Watchlist button style */
 #add-watchlist-button.button-watchlist-add {
     background-color: #ff6f61 !important; /* Force trending section color */
     color: white !important;
@@ -459,7 +459,7 @@ button:hover {
     background-color: #ff4a3c !important; /* Darker hover color */
 }
 
-/* Highly specific Remove from Watchlist button style */
+/* Remove from Watchlist button style */
 #remove-watchlist-button.button-watchlist-remove {
     background-color: #d9534f !important; /* Force red shade */
     color: white !important;

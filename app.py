@@ -10,8 +10,9 @@ import jwt
 import datetime
 from dotenv import load_dotenv
 from flask_mail import Mail, Message
+from flask import Flask, send_from_directory
 import requests
-from plot_rec import MovieRecommender
+from csv_plot_rec import MovieRecommender
 
 # Load environment variables
 load_dotenv()
@@ -22,7 +23,7 @@ TMDB_API_KEY = '242a2ba5f4ab590b9cc98651955f4509'
 # Initialize Flask app
 app = Flask(__name__, static_folder='static')
 CORS(app)
-app.secret_key = os.getenv('FLASK_SECRET_KEY', 'default_secret_key')  # Use an environment variable for the secret key
+app.secret_key = os.getenv('FLASK_SECRET_KEY', 'default_secret_key')  # environment variable for the secret key
 
 # Initialize Flask-Mail
 app.config['MAIL_SERVER'] = 'smtp.att.yahoo.com'
@@ -52,11 +53,6 @@ def user_session():
     else:
         return jsonify({"message": "No active session. Please log in."}), 401
 
-# @app.route('/check_session')
-#def check_session():
- #   if 'username' in session:
-  #      return jsonify(logged_in=True, username=session['username'])
-   # return jsonify(logged_in=False)
 
 @app.route('/check_session', methods=['GET'])
 def check_session():
@@ -67,7 +63,7 @@ def check_session():
         if 'initials' in session:
             initials = session['initials']
         else:
-            # Otherwise, fetch initials from the database using user_id
+            # Else fetch initials from the database using user_id
             conn = get_db_connection()
             cur = conn.cursor()
             cur.execute("SELECT first_name, last_name FROM alpha.user_details WHERE user_id = %s", (user_id,))
@@ -76,7 +72,7 @@ def check_session():
             conn.close()
 
             initials = f"{user[0][0]}{user[1][0]}"
-            session['initials'] = initials  # Store initials in session for future use
+            session['initials'] = initials  # Store initials in session
 
         return jsonify(logged_in=True, initials=initials)
     
@@ -87,8 +83,8 @@ def check_session():
 
 @app.route('/logout', methods=['POST'])
 def logout():
-    session.pop('user_id', None)  # Remove user_id from session
-    session.pop('username', None)  # Optionally remove initials too
+    session.pop('user_id', None)  
+    session.pop('username', None)  
     return jsonify({"message": "Successfully logged out"}), 200
 
 # Serve the landing page
@@ -140,7 +136,7 @@ def signin():
                 if user and check_password_hash(user['password_hash'], password):
                     # Store user_id and initials in session
                     initials = f"{user['first_name'][0]}{user['last_name'][0]}"
-                    session['user_id'] = user['user_id']  # Store user_id for future use
+                    session['user_id'] = user['user_id']  # Store user_id 
                     session['initials'] = initials  # Store initials instead of username
                     
                     return jsonify({"message": "Login successful!", "initials": initials})
@@ -190,7 +186,7 @@ def forgot_password():
                         'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=15)
                     }, app.secret_key)
 
-                    # Save the token in Password_Reset table (if required)
+                    # Save the token in Password_Reset table 
                     cursor.execute("""INSERT INTO alpha.Password_Reset (user_id, reset_token, expires_at) 
                                       VALUES (%s, %s, %s)""",
                                    (user['user_id'], reset_token, datetime.datetime.utcnow() + datetime.timedelta(minutes=15)))
@@ -198,7 +194,7 @@ def forgot_password():
 
                     # Send email with reset link
                     msg = Message("Password Reset Request",
-                                  sender=os.getenv('MAIL_USERNAME'),  # Use environment variable for sender
+                                  sender=os.getenv('MAIL_USERNAME'),  # Use environment variable 
                                   recipients=[email])
                     msg.body = f"Your password reset link: http://your-domain.com/reset-password?token={reset_token}"
                     mail.send(msg)
@@ -224,7 +220,7 @@ def get_movie_details_from_tmdb(movie_id):
         return {}
 
 def update_movie_list():
-    # Logic to fetch movies from Trakt and update your database or TMDb library.
+    
     pass
 
 @app.route('/get_preferences_form', methods=['GET'])
@@ -234,7 +230,7 @@ def get_preferences_form():
 @app.route('/api/save_preferences', methods=['POST'])
 def save_preferences():
     data = request.json
-    user_id = get_current_user_id()  # Replace with actual user ID fetching logic
+    user_id = get_current_user_id() 
     genres = data['genres']
     subgenres = data['subgenres']
 
@@ -254,6 +250,15 @@ def save_preferences():
     conn.close()
 
     return jsonify({'status': 'success'})
+
+
+@app.route('/is_logged_in', methods=['GET'])
+def is_logged_in():
+    if 'user_id' in session:
+        return jsonify({'logged_in': True})
+    else:
+        return jsonify({'logged_in': False})
+
 
 @app.route('/api/get_genres', methods=['GET'])
 def get_genres():
@@ -293,7 +298,7 @@ def get_genres_and_subgenres():
         conn = get_db_connection()
         cur = conn.cursor()
 
-        # Query the genres and subgenres from your database
+        # Query the genres and subgenres from database
         genres_query = """
         SELECT g.genre_id, g.genre_name, 
                json_agg(json_build_object('sub_genre_id', sg.sub_genre_id, 'sub_genre_name', sg.sub_genre_name)) AS subgenres
@@ -320,13 +325,13 @@ def get_genres_and_subgenres():
 
     finally:
         if conn:
-            conn.close()  # Ensure the connection is closed
+            conn.close() 
 
 
 @app.route('/submit_preferences', methods=['POST'])
 def submit_preferences():
     try:
-        user_id = session.get('user_id')  # Assuming user_id is stored in the session
+        user_id = session.get('user_id')  
         preferences = request.json.get('preferences', [])
 
         # Establish database connection
@@ -357,7 +362,7 @@ def submit_preferences():
 
 @app.route('/get_recommendations', methods=['GET'])
 def get_recommendations():
-    user_id = get_logged_in_user_id()  # Assuming you have a way to get the logged-in user's ID
+    user_id = get_logged_in_user_id() 
 
     # Fetch genres and sub-genres from the database for this user
     cur = conn.cursor()
@@ -369,6 +374,9 @@ def get_recommendations():
         WHERE up.user_id = %s;
     """, (user_id,))
     preferences = cur.fetchall()
+
+    if not preferences:
+        return jsonify({"message": "Please update preference"})
 
     # Fetch movies from TMDB based on the main genres
     genres = [genre[0] for genre in preferences if genre[0] is not None]
@@ -385,7 +393,6 @@ def get_recommendations():
 
     return jsonify(filtered_movies)
 
-
 @app.route('/get_user_preferences', methods=['GET'])
 def get_user_preferences():
     if 'user_id' in session:
@@ -394,22 +401,32 @@ def get_user_preferences():
             conn = get_db_connection()
             cur = conn.cursor()
             cur.execute("""
-                SELECT genre_id, sub_genre_id 
-                FROM alpha.user_preferences 
-                WHERE user_id = %s
+                SELECT up.genre_id, up.sub_genre_id, sg.sub_genre_name 
+                FROM alpha.user_preferences up
+                JOIN alpha.sub_genres sg ON up.sub_genre_id = sg.sub_genre_id
+                WHERE up.user_id = %s
             """, (user_id,))
             preferences = cur.fetchall()
             cur.close()
             conn.close()
 
             # Format the response as a list of dictionaries
-            user_preferences = [{"genre_id": pref[0], "sub_genre_id": pref[1]} for pref in preferences]
+            user_preferences = [{"genre_id": pref[0], "sub_genre_id": pref[1], "sub_genre_name": pref[2]} for pref in preferences]
             return jsonify(user_preferences), 200
         except Exception as e:
             return jsonify({"error": str(e)}), 500
     else:
         return jsonify({"error": "User not logged in."}), 401
 
+
+# Route to serve the default image
+@app.route('/default-image')
+def default_image():
+    try:
+        return send_from_directory('static/images', 'default.jpg') 
+    except Exception as e:
+        return f"Error: {str(e)}", 500
+        
 @app.route('/add_to_watchlist', methods=['POST'])
 def add_to_watchlist():
     if 'user_id' not in session:
@@ -449,14 +466,13 @@ def get_watchlist():
         return jsonify({'error': 'Unauthorized'}), 401
 
     user_id = session['user_id']
-    print(f"Fetching watchlist for user_id: {user_id}")  # Debugging line
+    print(f"Fetching watchlist for user_id: {user_id}")  
 
     try:
         conn = get_db_connection()
-        print("Database connection successful.")  # Debugging line
+        print("Database connection successful.")  
         cur = conn.cursor()
 
-        # Adjust the SQL query to reflect the correct table and column names
         cur.execute(""" 
             SELECT movie_id, movie_title, poster_path 
             FROM alpha.user_watchlist 
@@ -468,7 +484,7 @@ def get_watchlist():
         conn.close()
 
         if not watchlist:
-            print("Watchlist is empty for user_id: {}".format(user_id))  # Debugging line
+            print("Watchlist is empty for user_id: {}".format(user_id)) 
             return jsonify([])
 
         watchlist_data = [
@@ -482,8 +498,8 @@ def get_watchlist():
         return jsonify(watchlist_data)
 
     except Exception as e:
-        print(f"Error fetching watchlist: {e}")  # Log the error for debugging
-        return jsonify({'error': str(e)}), 500  # Include the error message in the response
+        print(f"Error fetching watchlist: {e}")  
+        return jsonify({'error': str(e)}), 500  
 
 
 @app.route('/watchlist')
@@ -492,14 +508,7 @@ def watchlist():
 
 @app.route('/recommended')
 def recommended():
-    # Check if user is logged in
-    if 'user_id' not in session:
-        # Render the recommended page with a login prompt message instead of returning JSON
-        return render_template('recommended.html', message='Please log in to see your recommendations.')
-
-    # Render the recommended page for logged-in users without any message
     return render_template('recommended.html')
-
 
 @app.route('/remove_from_watchlist', methods=['POST'])
 def remove_from_watchlist():
@@ -549,7 +558,6 @@ def plot_recommend():
     recommendations = recommender.rec_movie(plot)
     print(recommendations)
     return jsonify({"recommendations": recommendations}), 200
-
 
 # Initialize and start the scheduler
 scheduler = BackgroundScheduler()
