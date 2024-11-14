@@ -622,24 +622,11 @@ def forgot_password():
 @app.route('/reset-password', methods=['GET', 'POST'])
 def reset_password():
     if request.method == 'GET':
-        return '''
-        <!doctype html>
-        <html lang="en">
-          <head>
-            <meta charset="utf-8">
-            <title>Reset Password</title>
-          </head>
-          <body>
-            <h2>Reset Password</h2>
-            <form action="/reset-password" method="POST">
-              <input type="hidden" name="token" value="{token}">
-              <label for="new_password">New Password:</label><br>
-              <input type="password" id="new_password" name="new_password" required><br><br>
-              <button type="submit">Reset Password</button>
-            </form>
-          </body>
-        </html>
-        '''.format(token=request.args.get('token'))
+        token = request.args.get('token')
+        if not token:
+            return jsonify({"error": "Token is required"}), 400
+        return render_template('reset_password.html', token=token)
+    
     elif request.method == 'POST':
         data = request.form
         token = data.get('token')
@@ -658,9 +645,9 @@ def reset_password():
                         SELECT * FROM alpha.Password_Reset 
                         WHERE user_id = %s AND reset_token = %s AND expires_at > %s
                     """, (user_id, token, datetime.datetime.utcnow()))
-                    
+
                     token_data = cursor.fetchone()
-                    
+
                     if not token_data:
                         return jsonify({"error": "Invalid or expired token"}), 400
 
