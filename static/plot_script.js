@@ -161,7 +161,7 @@ document.addEventListener('DOMContentLoaded', () => {
             resultItem.setAttribute('data-id', item.id);
 
             const poster = document.createElement('img');
-            poster.src = item.poster_path ? `https://image.tmdb.org/t/p/w200${item.poster_path}` : 'path/to/default/image.jpg';
+            poster.src = item.poster_path ? `https://image.tmdb.org/t/p/w200${item.poster_path}` : '/default-image';
             poster.alt = item.title || item.name;
             resultItem.appendChild(poster);
 
