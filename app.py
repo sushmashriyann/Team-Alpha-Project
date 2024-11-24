@@ -502,9 +502,8 @@ def plot_recommend():
 @app.route('/guest', methods=['POST'])
 def guestLogin():
     try:
-        # Fetch the 'Guest' user details from the database
         guest_username = 'Guest'
-        guest_password = 'guest'  # The plain password you want to check
+        guest_password = 'guest'  
         
         with get_db_connection() as conn:
             with conn.cursor(cursor_factory=RealDictCursor) as cursor:
@@ -517,8 +516,8 @@ def guestLogin():
 
                 if user and check_password_hash(user['password_hash'], guest_password):
                     initials = f"{user['first_name'][0]}{user['last_name'][0]}"
-                    session['user_id'] = user['user_id']  # Store user_id for future use
-                    session['initials'] = initials  # Store initials instead of username
+                    session['user_id'] = user['user_id']  
+                    session['initials'] = initials 
                     
                     return jsonify({"message": "Guest login successful!", "initials": initials, "name": "Guest"})
                 else:
