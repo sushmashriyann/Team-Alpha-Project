@@ -35,10 +35,10 @@ mail = Mail(app)
 # Database connection function
 def get_db_connection():
     conn = psycopg2.connect(
-        host='localhost',
+        host='131.123.35.22',
         port='5433',
-        database='MovieWeb',
-        user='postgres',
+        database='moviecom',
+        user='moviecom',
         password=os.getenv('DB_PASSWORD', 'default_password')  # Use an environment variable for the DB password
     )
     return conn
