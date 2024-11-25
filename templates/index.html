@@ -286,6 +286,11 @@
             messageDisplay.textContent = "An error occurred. Please try again.";
         }
     }
+
+        window.onload = () => {
+        const forgotUsernameModal = document.getElementById("forgotUsernameModal");
+        forgotUsernameModal.style.display = "none";
+    };
 </script>
 
     <script src="{{ url_for('static', filename='scripts.js') }}"></script>
