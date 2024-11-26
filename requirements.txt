@@ -1,0 +1,12 @@
+Flask
+flask-cors
+psycopg2-binary
+python-dotenv
+Werkzeug
+APScheduler
+PyJWT
+Flask-Mail
+requests
+langchain-core
+langchain
+langchain-openai
